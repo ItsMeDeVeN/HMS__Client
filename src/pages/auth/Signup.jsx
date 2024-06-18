@@ -39,10 +39,8 @@ const Signup = () => {
           initialValues={initialValues}
           validationSchema={validationSchema}
           onSubmit={(values, { setSubmitting }) => {
-            localStorage.setItem("role", JSON.stringify(values));
             setSubmitting(true);
             console.log("Submitted values:", JSON.stringify(values));
-            toast.success("Form submitted successfully!");
             if (values.role === "Patient") {
               navigate("/PatientOnBoard");
             } else if (values.role === "Doctor") {

@@ -1,12 +1,50 @@
-import React from "react";
+import React,{useState} from "react";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useNavigate } from "react-router-dom";
-
+import axios from "axios";
 const Login = () => {
   const navigate = useNavigate();
+
+  const [submitting, setSubmitting] = useState(false);
+
+  const handleSubmit = async (values) => {
+    try {
+      setSubmitting(true);
+      const res = await axios.post("http://localhost:3000/api/login", values);
+      // console.log(res);
+      // console.log(res.data.role);
+      handleResponse(res.status, res.data.message, res);
+    } catch (e) {
+      console.log(e);
+      handleResponse(e.response.status, e.response.data.message);
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
+  const handleResponse = (status, message, res) => {
+    if (status === 200) {
+      toast.success(message);
+      if (res.data.role === "Doctor") {
+      setTimeout(() => {
+        navigate("/DoctorDashBoard");
+      }, 2000);
+    }
+      else if (res.data.role === "Patient") {
+        setTimeout(() => {
+          window.location.href = "/PatientDashBoard";
+        }, 2000);
+      }
+    } else if (status === 400 || status === 403 || status === 401) {
+      toast.error(message);
+    } else {
+      toast.error("An error occurred");
+    }
+  };
+
   return (
     <div className="flex justify-center items-center min-h-screen bg-gradient-to-r from-blue-100 via-blue-300 to-blue-500">
       <div className="bg-white p-10 rounded-lg shadow-xl w-full max-w-md">
@@ -24,33 +62,7 @@ const Login = () => {
               .required("Required"),
             password: Yup.string().required("Required"),
           })}
-          onSubmit={(values) => {
-            const stored_details = JSON.parse(localStorage.getItem("details"));
-            const which_role = JSON.parse(localStorage.getItem("role"));
-            // console.log(which_role.role)
-            // console.log(stored_details.email, stored_details.password)
-            if (
-              stored_details.email === values.email &&
-              stored_details.password === values.password
-            ) {
-              // console.log(values.email, values.password);
-              toast.success("Login Successfull");
-              if(which_role.role === "Doctor"){
-              setTimeout(() => {
-                navigate("/DoctorDashBoard");
-              }, 3000);
-            } else if(which_role.role === "Patient"){
-              setTimeout(() => {
-                navigate("/PatientDashBoard");
-              }, 3000);
-            } 
-            else {
-              toast.error("Invalid Credentials");
-              setTimeout(() => {
-                navigate("/login");
-              }, 3000);
-            }
-          }}}
+          onSubmit={handleSubmit}
         >
           <Form className="space-y-6">
             <div className="flex flex-col">

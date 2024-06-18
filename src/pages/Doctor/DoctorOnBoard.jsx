@@ -1,21 +1,59 @@
-import React from "react";
+import React, { useState } from "react";
 import { Formik, Field, Form, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
 
 const DoctorOnBoard = () => {
   const navigate = useNavigate();
+  // const [availability, setAvailability] = useState([]);
+
+  const [submitting, setSubmitting] = useState(false);
+
+  const handleSubmit = async (values) => {  
+    try {
+      setSubmitting(true);
+      const res = await axios.post("http://localhost:3000/api/registerdoctor", values);
+      console.log(res);
+      handleResponse(res.status, res.data.message);
+    } catch (e) {
+      console.log(e);
+      handleResponse(e.response.status, e.response.data.message);
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
+  const handleResponse = (status, message) => {
+    if (status === 201) {
+      toast.success(message);
+      setTimeout(() => {
+        navigate("/login");
+      }, 2000);
+    } else if (status >= 400 && status < 500) {
+      toast.error(message);
+    } else {
+      toast.error("An error occurred");
+    }
+  };
+
   const initialValues = {
     name: "",
     email: "",
     password: "",
     confirmpassword: "",
     contact: "",
-    dateofbirth: "",
-    Doc_fee: "",
-    Department: "",
+    gender: "",
+    department: "",
+    // dateofbirth: "",
+    // age: "",
+    // consultingfee: "",
+    // address: "",
+    // day: "",
+    // timeSlot: "",
+    
   };
 
   const validationSchema = Yup.object({
@@ -34,11 +72,26 @@ const DoctorOnBoard = () => {
       .min(10, "Must be exactly 10 digits")
       .max(10, "Must be exactly 10 digits")
       .required("Required"),
-    dateofbirth: Yup.date().required("Required"),
-    Doc_fee: Yup.number().required("Required"),
-    Department: Yup.string().required("Required"),
+      department: Yup.string().required("Required"),
+      gender: Yup.string().required("Required"),
+    // dateofbirth: Yup.date(),
+    // age: Yup.number(),
+    // consultingfee: Yup.number(),
+    // address: Yup.string(),
+    // day: Yup.string(),
+    // timeSlot: Yup.string(),
+    
   });
 
+  // const addAvailability = (values, setFieldValue) => {
+  //   const newAvailability = [
+  //     ...availability,
+  //     { day: values.day, timeSlot: values.timeSlot },
+  //   ];
+  //   setAvailability(newAvailability);
+  //   setFieldValue("day", "");
+  //   setFieldValue("timeSlot", "");
+  // };
   return (
     <div className="flex justify-center items-center min-h-screen bg-gradient-to-r from-blue-200 via-blue-500 to-blue-800">
       <div
@@ -58,220 +111,361 @@ const DoctorOnBoard = () => {
         <Formik
           initialValues={initialValues}
           validationSchema={validationSchema}
-          onSubmit={(values, { setSubmitting }) => {
-            localStorage.setItem("details", JSON.stringify(values));
-            setSubmitting(true);
-            console.log("Submitted values:", values);
-            toast.success("Form submitted successfully!");
-            setSubmitting(false);
-            
-            setTimeout(() => {
-              navigate("/login")
-              }, 3000)
-          }}
+          // onSubmit={(values, { setSubmitting }) => {
+          //   const formValues = { ...values, availability };
+          //   localStorage.setItem("details", JSON.stringify(formValues));
+          //   setSubmitting(true);
+          //   console.log("Submitted values:", formValues);
+          //   toast.success("Form submitted successfully!");
+          //   setSubmitting(false);
+
+          //   setTimeout(() => {
+          //     navigate("/login");
+          //   }, 3000);
+          // }}
+          onSubmit={handleSubmit}
         >
-          <Form>
-            <div className="flex flex-col mb-4">
-              <label
-                htmlFor="name"
-                className="font-semibold text-gray-700"
+          {({ values, setFieldValue }) => (
+            <Form>
+              <div className="flex flex-col mb-4">
+                <label
+                  htmlFor="name"
+                  className="font-semibold text-gray-700"
+                  style={{
+                    textShadow: "1px 1px 1px rgba(0, 0, 0, 0.1)",
+                  }}
+                >
+                  Full Name
+                </label>
+                <Field
+                  type="text"
+                  name="name"
+                  className="border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400 transition-shadow"
+                  placeholder="Name"
+                />
+                <ErrorMessage
+                  name="name"
+                  component="div"
+                  className="text-red-500 text-sm"
+                />
+              </div>
+
+              <div className="flex flex-col">
+                <label
+                  htmlFor="gender"
+                  className="font-semibold text-gray-700"
+                  style={{
+                    textShadow: "1px 1px 1px rgba(0, 0, 0, 0.1)",
+                  }}
+                >
+                  Gender
+                </label>
+                <Field
+                  as="select"
+                  name="gender"
+                  className="border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400 transition-shadow"
+                >
+                  <option value="">Select Gender</option>
+                  <option value="Male">Male</option>
+                  <option value="Female">Female</option>
+                  <option value="Others">Others</option>
+                </Field>
+                <ErrorMessage
+                  name="gender"
+                  component="div"
+                  className="text-red-500 text-sm"
+                />
+              </div>
+
+              <div className="flex flex-col mb-4 mt-4">
+                <label
+                  htmlFor="email"
+                  className="font-semibold text-gray-700"
+                  style={{
+                    textShadow: "1px 1px 1px rgba(0, 0, 0, 0.1)",
+                  }}
+                >
+                  Email Address
+                </label>
+                <Field
+                  type="email"
+                  name="email"
+                  className="border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400 transition-shadow"
+                  placeholder="example@example.com"
+                />
+                <ErrorMessage
+                  name="email"
+                  component="div"
+                  className="text-red-500 text-sm"
+                />
+              </div>
+
+              <div className="flex flex-col mb-4">
+                <label
+                  htmlFor="contact"
+                  className="font-semibold text-gray-700"
+                  style={{
+                    textShadow: "1px 1px 1px rgba(0, 0, 0, 0.1)",
+                  }}
+                >
+                  Contact Number
+                </label>
+                <Field
+                  type="text"
+                  name="contact"
+                  className="border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400 transition-shadow"
+                  placeholder="1234567890"
+                />
+                <ErrorMessage
+                  name="contact"
+                  component="div"
+                  className="text-red-500 text-sm"
+                />
+              </div>
+              <div className="flex flex-col mb-4">
+                <label
+                  htmlFor="department"
+                  className="font-semibold text-gray-700"
+                  style={{
+                    textShadow: "1px 1px 1px rgba(0, 0, 0, 0.1)",
+                  }}
+                >
+                  Department
+                </label>
+                <Field
+                  as="select"
+                  name="department"
+                  className="border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400 transition-shadow"
+                >
+                  <option value="">Select Department</option>
+                  <option value="cardiology">Cardiology</option>
+                  <option value="dermatology">Dermatology</option>
+                  <option value="neurology">Neurology</option>
+                  <option value="oncology">Oncology</option>
+                  <option value="pediatrics">Pediatrics</option>
+                  <option value="radiology">Radiology</option>
+                  <option value="surgery">Surgery</option>
+                </Field>
+                <ErrorMessage
+                  name="department"
+                  component="div"
+                  className="text-red-500 text-sm"
+                />
+              </div>
+
+              <div className="flex flex-col mb-4">
+                <label
+                  htmlFor="password"
+                  className="font-semibold text-gray-700"
+                  style={{
+                    textShadow: "1px 1px 1px rgba(0, 0, 0, 0.1)",
+                  }}
+                >
+                  Password
+                </label>
+                <Field
+                  type="password"
+                  name="password"
+                  className="border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400 transition-shadow"
+                  placeholder="********"
+                />
+                <ErrorMessage
+                  name="password"
+                  component="div"
+                  className="text-red-500 text-sm"
+                />
+              </div>
+
+              <div className="flex flex-col mb-4">
+                <label
+                  htmlFor="confirmpassword"
+                  className="font-semibold text-gray-700"
+                  style={{
+                    textShadow: "1px 1px 1px rgba(0, 0, 0, 0.1)",
+                  }}
+                >
+                  Confirm Password
+                </label>
+                <Field
+                  type="password"
+                  name="confirmpassword"
+                  className="border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400 transition-shadow"
+                  placeholder="********"
+                />
+                <ErrorMessage
+                  name="confirmpassword"
+                  component="div"
+                  className="text-red-500 text-sm"
+                />
+                </div>
+
+
+                
+
+              
+              {/* <div className="flex flex-col mb-4">
+                <label
+                  htmlFor="dateofbirth"
+                  className="font-semibold text-gray-700"
+                  style={{
+                    textShadow: "1px 1px 1px rgba(0, 0, 0, 0.1)",
+                  }}
+                >
+                  Date of Birth
+                </label>
+                <Field
+                  type="date"
+                  name="dateofbirth"
+                  className="border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400 transition-shadow"
+                />
+                <ErrorMessage
+                  name="dateofbirth"
+                  component="div"
+                  className="text-red-500 text-sm"
+                />
+              </div>
+
+              <div className="flex flex-col">
+                <label
+                  htmlFor="age"
+                  className="font-semibold text-gray-700"
+                  style={{
+                    textShadow: "1px 1px 1px rgba(0, 0, 0, 0.1)",
+                  }}
+                >
+                  Age
+                </label>
+                <Field
+                  type="text"
+                  name="age"
+                  className="border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400 transition-shadow"
+                  placeholder=""
+                />
+                <ErrorMessage
+                  name="age"
+                  component="div"
+                  className="text-red-500 text-sm"
+                />
+              </div> */}
+             
+
+              {/* <div className="flex flex-col mb-4">
+                <label
+                  htmlFor="address"
+                  className="font-semibold text-gray-700"
+                  style={{
+                    textShadow: "1px 1px 1px rgba(0, 0, 0, 0.1)",
+                  }}
+                >
+                  Address
+                </label>
+                <Field
+                  as="textarea"
+                  name="address"
+                  className="border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400 transition-shadow"
+                  placeholder="Your Address"
+                />
+                <ErrorMessage
+                  name="address"
+                  component="div"
+                  className="text-red-500 text-sm"
+                />
+              </div>
+
+              <div className="flex flex-col mb-4">
+                <label
+                  htmlFor="day"
+                  className="font-semibold text-gray-700"
+                  style={{
+                    textShadow: "1px 1px 1px rgba(0, 0, 0, 0.1)",
+                  }}
+                >
+                  Availability
+                </label>
+                <div className="flex space-x-2 mb-2">
+                  <Field
+                    as="select"
+                    name="day"
+                    className="border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400 transition-shadow"
+                  >
+                    <option value="">Select Day</option>
+                    <option value="Monday">Monday</option>
+                    <option value="Tuesday">Tuesday</option>
+                    <option value="Wednesday">Wednesday</option>
+                    <option value="Thursday">Thursday</option>
+                    <option value="Friday">Friday</option>
+                    <option value="Saturday">Saturday</option>
+                    <option value="Sunday">Sunday</option>
+                  </Field>
+                  <Field
+                    type="text"
+                    name="timeSlot"
+                    className="border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400 transition-shadow"
+                    placeholder="e.g., 9AM - 5PM"
+                  />
+                  <button
+                    type="button"
+                    className="bg-blue-500 text-white px-4 py-2 rounded-md"
+                    onClick={() => addAvailability(values, setFieldValue)}
+                  >
+                    Add
+                  </button>
+                </div>
+                <ErrorMessage
+                  name="day"
+                  component="div"
+                  className="text-red-500 text-sm"
+                />
+                <ErrorMessage
+                  name="timeSlot"
+                  component="div"
+                  className="text-red-500 text-sm"
+                />
+                <div className="mt-2">
+                  {availability.map((slot, index) => (
+                    <div key={index} className="flex justify-between mb-1">
+                      <span>
+                        {slot.day}: {slot.timeSlot}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              <div className="flex flex-col mb-4">
+                <label
+                  htmlFor="consultingfee"
+                  className="font-semibold text-gray-700"
+                  style={{
+                    textShadow: "1px 1px 1px rgba(0, 0, 0, 0.1)",
+                  }}
+                >
+                  Consulting Fees Charged
+                </label>
+                <Field
+                  type="text"
+                  name="consultingfee"
+                  className="border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400 transition-shadow"
+                  placeholder="Rs :-"
+                />
+                <ErrorMessage
+                  name="consultingfee"
+                  component="div"
+                  className="text-red-500 text-sm"
+                />
+              </div> */}
+
+              <button
+                className="bg-gradient-to-r from-blue-500 to-teal-500 hover:from-blue-600 hover:to-teal-600 text-white font-semibold py-2 px-4 rounded transition-colors w-full shadow-md"
+                type="submit"
                 style={{
-                  textShadow: "1px 1px 1px rgba(0, 0, 0, 0.1)",
+                  boxShadow: "0 4px 8px rgba(0, 0, 0, 0.2)",
                 }}
               >
-                Full Name
-              </label>
-              <Field
-                type="text"
-                name="name"
-                className="border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400 transition-shadow"
-                placeholder="Name"
-              />
-              <ErrorMessage
-                name="name"
-                component="div"
-                className="text-red-500 text-sm"
-              />
-            </div>
-
-            <div className="flex flex-col mb-4">
-              <label
-                htmlFor="dateofbirth"
-                className="font-semibold text-gray-700"
-                style={{
-                  textShadow: "1px 1px 1px rgba(0, 0, 0, 0.1)",
-                }}
-              >
-                Date of Birth
-              </label>
-              <Field
-                type="date"
-                name="dateofbirth"
-                className="border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400 transition-shadow"
-              />
-              <ErrorMessage
-                name="dateofbirth"
-                component="div"
-                className="text-red-500 text-sm"
-              />
-            </div>
-
-            <div className="flex flex-col mb-4">
-              <label
-                htmlFor="email"
-                className="font-semibold text-gray-700"
-                style={{
-                  textShadow: "1px 1px 1px rgba(0, 0, 0, 0.1)",
-                }}
-              >
-                Email Address
-              </label>
-              <Field
-                type="email"
-                name="email"
-                className="border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400 transition-shadow"
-                placeholder="example@example.com"
-              />
-              <ErrorMessage
-                name="email"
-                component="div"
-                className="text-red-500 text-sm"
-              />
-            </div>
-
-            <div className="flex flex-col mb-4">
-              <label
-                htmlFor="contact"
-                className="font-semibold text-gray-700"
-                style={{
-                  textShadow: "1px 1px 1px rgba(0, 0, 0, 0.1)",
-                }}
-              >
-                Contact Number
-              </label>
-              <Field
-                type="text"
-                name="contact"
-                className="border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400 transition-shadow"
-                placeholder="1234567890"
-              />
-              <ErrorMessage
-                name="contact"
-                component="div"
-                className="text-red-500 text-sm"
-              />
-            </div>
-
-            <div className="flex flex-col mb-4">
-              <label
-                htmlFor="Doc_fee"
-                className="font-semibold text-gray-700"
-                style={{
-                  textShadow: "1px 1px 1px rgba(0, 0, 0, 0.1)",
-                }}
-              >
-                Consulting Fees Charged
-              </label>
-              <Field
-                type="text"
-                name="Doc_fee"
-                className="border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400 transition-shadow"
-                placeholder="Rs :-"
-              />
-              <ErrorMessage
-                name="Doc_fee"
-                component="div"
-                className="text-red-500 text-sm"
-              />
-            </div>
-
-            <div className="flex flex-col mb-4">
-              <label
-                htmlFor="Department"
-                className="font-semibold text-gray-700"
-                style={{
-                  textShadow: "1px 1px 1px rgba(0, 0, 0, 0.1)",
-                }}
-              >
-                Department
-              </label>
-              <Field
-                as="select"
-                name="Department"
-                className="border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400 transition-shadow"
-              >
-                <option value="">Select Department</option>
-                <option value="cardiology">Cardiology</option>
-                <option value="dermatology">Dermatology</option>
-                <option value="neurology">Neurology</option>
-                <option value="oncology">Oncology</option>
-                <option value="pediatrics">Pediatrics</option>
-                <option value="radiology">Radiology</option>
-                <option value="surgery">Surgery</option>
-              </Field>
-              <ErrorMessage
-                name="Department"
-                component="div"
-                className="text-red-500 text-sm"
-              />
-            </div>
-
-            <div className="flex flex-col mb-4">
-              <label
-                htmlFor="password"
-                className="font-semibold text-gray-700"
-                style={{
-                  textShadow: "1px 1px 1px rgba(0, 0, 0, 0.1)",
-                }}
-              >
-                Password
-              </label>
-              <Field
-                type="password"
-                name="password"
-                className="border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400 transition-shadow"
-                placeholder="********"
-              />
-              <ErrorMessage
-                name="password"
-                component="div"
-                className="text-red-500 text-sm"
-              />
-            </div>
-
-            <div className="flex flex-col mb-4">
-              <label
-                htmlFor="confirmpassword"
-                className="font-semibold text-gray-700"
-                style={{
-                  textShadow: "1px 1px 1px rgba(0, 0, 0, 0.1)",
-                }}
-              >
-                Confirm Password
-              </label>
-              <Field
-                type="password"
-                name="confirmpassword"
-                className="border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400 transition-shadow"
-                placeholder="********"
-              />
-              <ErrorMessage
-                name="confirmpassword"
-                component="div"
-                className="text-red-500 text-sm"
-              />
-            </div>
-
-            <button
-              className="bg-gradient-to-r from-blue-500 to-teal-500 hover:from-blue-600 hover:to-teal-600 text-white font-semibold py-2 px-4 rounded transition-colors w-full shadow-md"
-              type="submit"
-              style={{
-                boxShadow: "0 4px 8px rgba(0, 0, 0, 0.2)",
-              }}
-            >
-              Submit
-            </button>
-          </Form>
+                Submit
+              </button>
+            </Form>
+          )}
         </Formik>
       </div>
       <ToastContainer />
