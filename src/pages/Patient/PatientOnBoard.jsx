@@ -20,7 +20,9 @@ const PatientOnBoard = () => {
       handleResponse(res.status, res.data.message);
     } catch (e) {
       console.log(e);
-      handleResponse(e.response.status, e.response.data.message);
+      const status = e.response ? e.response.status : 500;
+      const message = e.response ? e.response.data.message : "An error occurred";
+      handleResponse(status, message);
     } finally {
       setSubmitting(false);
     }
@@ -56,25 +58,25 @@ const PatientOnBoard = () => {
   const validationSchema = Yup.object({
     name: Yup.string()
       .max(50, "Must be 50 characters or less")
-      .required("Required"),
+      .required("Full Name is Required!!!"),
     email: Yup.string()
       .matches(
         /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
         "Invalid Email Format"
       )
-      .required("Required"),
+      .required("Email is Required!!!"),
     password: Yup.string()
-      .required("Required")
+      .required("Password is Required!!!")
       .min(6, "Password must be at least 6 characters"),
     confirmpassword: Yup.string()
       .oneOf([Yup.ref("password"), null], "Passwords must match")
-      .required("Required"),
+      .required("Confirm Password is Required!!!"),
     contact: Yup.string()
       .matches(/^[0-9]+$/, "Must be only digits")
       .min(10, "Must be exactly 10 digits")
       .max(10, "Must be exactly 10 digits")
-      .required("Required"),
-    gender: Yup.string().required("Required"),
+      .required("Contact Details is Required!!!"),
+    gender: Yup.string().required("Gender is Required!!!"),
     // dateofbirth: Yup.date().required("Required"),
     // age: Yup.number().required("Required"),
     // bloodgroup: Yup.string().required("Required"),
@@ -137,32 +139,7 @@ const PatientOnBoard = () => {
               />
             </div>
 
-            <div className="flex flex-col">
-              <label
-                htmlFor="gender"
-                className="font-semibold text-gray-700"
-                style={{
-                  textShadow: "1px 1px 1px rgba(0, 0, 0, 0.1)",
-                }}
-              >
-                Gender
-              </label>
-              <Field
-                as="select"
-                name="gender"
-                className="border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400 transition-shadow"
-              >
-                <option value="">Select Gender</option>
-                <option value="Male">Male</option>
-                <option value="Female">Female</option>
-                <option value="Others">Others</option>
-              </Field>
-              <ErrorMessage
-                name="gender"
-                component="div"
-                className="text-red-500 text-sm"
-              />
-            </div>
+            
 
             <div className="flex flex-col">
               <label
@@ -208,6 +185,34 @@ const PatientOnBoard = () => {
                 className="text-red-500 text-sm"
               />
             </div>
+
+            <div className="flex flex-col">
+              <label
+                htmlFor="gender"
+                className="font-semibold text-gray-700"
+                style={{
+                  textShadow: "1px 1px 1px rgba(0, 0, 0, 0.1)",
+                }}
+              >
+                Gender
+              </label>
+              <Field
+                as="select"
+                name="gender"
+                className="border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400 transition-shadow"
+              >
+                <option value="">Select Gender</option>
+                <option value="Male">Male</option>
+                <option value="Female">Female</option>
+                <option value="Others">Others</option>
+              </Field>
+              <ErrorMessage
+                name="gender"
+                component="div"
+                className="text-red-500 text-sm"
+              />
+            </div>
+            
             <div className="flex flex-col">
               <label
                 htmlFor="password"

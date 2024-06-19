@@ -1,13 +1,15 @@
-import React,{useState} from "react";
+import React, { useState } from "react";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import axios from "axios";
+// import { useDispatch } from "react-redux";
+// import { loginUser } from "../../store/authSlice";
 const Login = () => {
   const navigate = useNavigate();
-
+  // const dispatch = useDispatch();
   const [submitting, setSubmitting] = useState(false);
 
   const handleSubmit = async (values) => {
@@ -24,18 +26,40 @@ const Login = () => {
       setSubmitting(false);
     }
   };
+  //   dispatch(loginUser(values))
+  //     .unwrap()
+  //     .then((response) => {
+  //       console.log(response);
+  //       if (response.role === "Doctor") {
+  //         toast.success(response.message);
+  //         setTimeout(() => {
+  //           navigate("/DoctorDashBoard");
+  //         }, 2000);
+  //       } else if (response.role === "Patient") {
+  //         toast.success(response.message);
+  //         setTimeout(() => {
+  //           navigate("/PatientDashBoard");
+  //         }, 2000);
+  //       }
+  //     })
+  //     .catch((error) => {
+  //       toast.error(error);
+  //     })
+  //     .finally(() => {
+  //       setSubmitting(false);
+  //     });
+  // };
 
   const handleResponse = (status, message, res) => {
     if (status === 200) {
       toast.success(message);
       if (res.data.role === "Doctor") {
-      setTimeout(() => {
-        navigate("/DoctorDashBoard");
-      }, 2000);
-    }
-      else if (res.data.role === "Patient") {
         setTimeout(() => {
-          window.location.href = "/PatientDashBoard";
+          navigate("/DoctorDashBoard");
+        }, 2000);
+      } else if (res.data.role === "Patient") {
+        setTimeout(() => {
+          navigate("/PatientDashBoard");
         }, 2000);
       }
     } else if (status === 400 || status === 403 || status === 401) {
@@ -104,6 +128,14 @@ const Login = () => {
             >
               Submit
             </button>
+            <div className="text-center mt-4">
+              <Link
+                to="/forgotpassword"
+                className="text-blue-500 hover:underline"
+              >
+                Forgot Password?
+              </Link>
+            </div>
           </Form>
         </Formik>
       </div>

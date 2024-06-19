@@ -59,21 +59,21 @@ const DoctorOnBoard = () => {
   const validationSchema = Yup.object({
     name: Yup.string()
       .max(50, "Must be 50 characters or less")
-      .required("Required"),
-    email: Yup.string().email("Invalid email format").required("Required"),
+      .required("Full Name is Required!!!"),
+    email: Yup.string().email("Invalid email format").required("Email is Required!!!"),
     password: Yup.string()
-      .required("Required")
+      .required("Password is Required!!!")
       .min(6, "Password must be at least 6 characters"),
     confirmpassword: Yup.string()
       .oneOf([Yup.ref("password"), null], "Passwords must match")
-      .required("Required"),
+      .required("confirm password is Required!!!"),
     contact: Yup.string()
       .matches(/^[0-9]+$/, "Must be only digits")
       .min(10, "Must be exactly 10 digits")
       .max(10, "Must be exactly 10 digits")
-      .required("Required"),
-      department: Yup.string().required("Required"),
-      gender: Yup.string().required("Required"),
+      .required("Contact detils are Required!!!!"),
+      department: Yup.string().required("Department is Required!!!"),
+      gender: Yup.string().required("Gender is Required!!!"),
     // dateofbirth: Yup.date(),
     // age: Yup.number(),
     // consultingfee: Yup.number(),
@@ -150,32 +150,7 @@ const DoctorOnBoard = () => {
                 />
               </div>
 
-              <div className="flex flex-col">
-                <label
-                  htmlFor="gender"
-                  className="font-semibold text-gray-700"
-                  style={{
-                    textShadow: "1px 1px 1px rgba(0, 0, 0, 0.1)",
-                  }}
-                >
-                  Gender
-                </label>
-                <Field
-                  as="select"
-                  name="gender"
-                  className="border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400 transition-shadow"
-                >
-                  <option value="">Select Gender</option>
-                  <option value="Male">Male</option>
-                  <option value="Female">Female</option>
-                  <option value="Others">Others</option>
-                </Field>
-                <ErrorMessage
-                  name="gender"
-                  component="div"
-                  className="text-red-500 text-sm"
-                />
-              </div>
+              
 
               <div className="flex flex-col mb-4 mt-4">
                 <label
@@ -248,6 +223,32 @@ const DoctorOnBoard = () => {
                 </Field>
                 <ErrorMessage
                   name="department"
+                  component="div"
+                  className="text-red-500 text-sm"
+                />
+              </div>
+              <div className="flex flex-col">
+                <label
+                  htmlFor="gender"
+                  className="font-semibold text-gray-700"
+                  style={{
+                    textShadow: "1px 1px 1px rgba(0, 0, 0, 0.1)",
+                  }}
+                >
+                  Gender
+                </label>
+                <Field
+                  as="select"
+                  name="gender"
+                  className="border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400 transition-shadow"
+                >
+                  <option value="">Select Gender</option>
+                  <option value="Male">Male</option>
+                  <option value="Female">Female</option>
+                  <option value="Others">Others</option>
+                </Field>
+                <ErrorMessage
+                  name="gender"
                   component="div"
                   className="text-red-500 text-sm"
                 />
