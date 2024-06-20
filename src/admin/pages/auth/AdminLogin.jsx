@@ -8,19 +8,14 @@ import axios from "axios";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowLeft } from "@fortawesome/free-solid-svg-icons";
 
-// import { useDispatch } from "react-redux";
-// import { loginUser } from "../../store/authSlice";
-const Login = () => {
+const AdminLogin = () => {
   const navigate = useNavigate();
-  // const dispatch = useDispatch();
   const [submitting, setSubmitting] = useState(false);
 
   const handleSubmit = async (values) => {
     try {
       setSubmitting(true);
-      const res = await axios.post("http://localhost:3000/api/login", values);
-      // console.log(res);
-      // console.log(res.data.role);
+      const res = await axios.post("http://localhost:3000/api/adminlogin", values);
       handleResponse(res.status, res.data.message, res);
     } catch (e) {
       console.log(e);
@@ -33,15 +28,9 @@ const Login = () => {
   const handleResponse = (status, message, res) => {
     if (status === 200) {
       toast.success(message);
-      if (res.data.role === "Doctor") {
         setTimeout(() => {
-          navigate("/DoctorDashBoard");
+          navigate("/AdminDashboard");
         }, 2000);
-      } else if (res.data.role === "Patient") {
-        setTimeout(() => {
-          navigate("/PatientDashBoard");
-        }, 2000);
-      }
     } else if (status === 400 || status === 403 || status === 401) {
       toast.error(message);
     } else {
@@ -124,12 +113,6 @@ const Login = () => {
               Submit
             </button>
             <div className="text-center mt-4">
-              <Link
-                to="/forgotpassword"
-                className="text-blue-500 hover:underline"
-              >
-                Forgot Password?
-              </Link>
             </div>
           </Form>
         </Formik>
@@ -139,4 +122,4 @@ const Login = () => {
   );
 };
 
-export default Login;
+export default AdminLogin;

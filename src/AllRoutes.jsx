@@ -2,6 +2,7 @@ import React from "react";
 import Signup from "./pages/auth/Signup";
 import Login from "./pages/auth/Login";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
+
 import DoctorOnBoard from "./pages/Doctor/DoctorOnBoard";
 import DoctorDashBoard from "./pages/Doctor/DoctorDashboard";
 import DOC_Appointments from "./pages/Doctor/DOC_Appointments";
@@ -13,9 +14,16 @@ import PatientDashboard from "./pages/Patient/PatientDashboard";
 import Patient_DOCList from "./pages/Patient/Patient_DOCList";
 import Patient_Settings from "./pages/Patient/Patient_Settings";
 import Patient_Appointments from "./pages/Patient/Patient_Appointments";
-// import ProtectedRoute from "./utils/ProtectedRoutes";
+
 import ForgotPassword from "./pages/auth/ForgotPassword";
 import Landingpage from "./pages/Landing/Landingpage";
+import NotFound from "./NotFound";
+
+import AdminDashboard from "./admin/pages/AdminDashboard";
+import AdminSettings from "./admin/pages/AdminSettings";
+import ManageDoctor from "./admin/pages/UserManagement/DoctorManagement/ManageDoctor";
+import ManagePatient from "./admin/pages/UserManagement/PateintManagement/ManagePatient";
+import AdminLogin from "./admin/pages/auth/AdminLogin";
 
 const AllRoutes = () => {
   return (
@@ -26,9 +34,16 @@ const AllRoutes = () => {
           <Route path="/signup" element={<Signup />}></Route>
           <Route path="/login" element={<Login />}></Route>
           <Route path="/forgotpassword" element={<ForgotPassword />}></Route>
+          <Route path="*" element={<NotFound/>}></Route>
+          
+          <Route path="/auth/login" element={<AdminLogin />}></Route>
 
-          <Route path="/DoctorOnBoard" element={<DoctorOnBoard />}></Route>
+            <Route path="/AdminDashboard" element={<AdminDashboard/>}></Route>
+            <Route path="/AdminDashBoard/Patient_List" element={<ManagePatient/>}></Route>
+            <Route path="/AdminDashboard/DOC_List" element={<ManageDoctor/>}></Route>
+            <Route path="/AdminDashboard/Settings" element={<AdminSettings/>}></Route>
 
+            <Route path="/signup/Doctor" element={<DoctorOnBoard />}></Route>
           {/* <Route element={<ProtectedRoute allowedRoles="Doctor"/>}> */}
             <Route
               path="/DoctorDashBoard"
@@ -48,7 +63,7 @@ const AllRoutes = () => {
             ></Route>
           {/* </Route> */}
 
-          <Route path="/PatientOnBoard" element={<PatientOnBoard />}></Route>
+          <Route path="/signup/Patient" element={<PatientOnBoard />}></Route>
           {/* <Route element={<ProtectedRoute allowedRoles="Patient"/>}> */}
           <Route
             path="/PatientDashBoard"
