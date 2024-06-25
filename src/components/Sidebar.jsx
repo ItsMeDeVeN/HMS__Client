@@ -19,8 +19,8 @@ const Sidebar = ({ role }) => {
 
   const adminLinks = [
     { to: "/AdminDashBoard", icon: <FaTachometerAlt className="mr-3" />, label: "AdminDashboard" },
-    { to: "/AdminDashBoard/Patient_List", icon: <FaListAlt  className="mr-3" />, label: "Patient-List" },
-    { to: "/AdminDashBoard/DOC_List", icon: <FaListAlt  className="mr-3" />, label: "DOC-List" },
+    { to: "/AdminDashBoard/Patient_List", icon: <FaListAlt  className="mr-3" />, label: "Patients" },
+    { to: "/AdminDashBoard/DOC_List", icon: <FaListAlt  className="mr-3" />, label: "Doctors" },
     { to: "/AdminDashBoard/Settings", icon: <FaCog className="mr-3" />, label: "Settings" }
   ];
 

@@ -8,15 +8,26 @@ import axios from "axios";
 
 const DoctorOnBoard = () => {
   const navigate = useNavigate();
-  // const [availability, setAvailability] = useState([]);
-
+  const [availability, setAvailability] = useState([]);
+  // const [educationalQualificationFile, setEducationalQualificationFile] =
+    useState(null);
   const [submitting, setSubmitting] = useState(false);
 
-  const handleSubmit = async (values) => {  
+  const handleSubmit = async (values) => {
     try {
+      values.availability = availability;
       setSubmitting(true);
-      const res = await axios.post("http://localhost:3000/api/registerdoctor", values);
-      console.log(res);
+
+      // Append the educationalQualificationFile to the form data
+      // const formData = new FormData();
+      // formData.append("educationalQualification", educationalQualificationFile);
+      // Object.keys(values).forEach((key) => {
+      //   formData.append(key, values[key]);
+      // });
+
+      const res = await axios.post(
+        "http://localhost:3000/api/registerdoctor",values);
+
       handleResponse(res.status, res.data.message);
     } catch (e) {
       console.log(e);
@@ -47,20 +58,22 @@ const DoctorOnBoard = () => {
     contact: "",
     gender: "",
     department: "",
-    // dateofbirth: "",
-    // age: "",
-    // consultingfee: "",
-    // address: "",
-    // day: "",
-    // timeSlot: "",
-    
+    dateofbirth: "",
+    age: "",
+    consultingfee: "",
+    address: "",
+    day: "",
+    timeSlot: "",
+    // educationalQualification: null,
   };
 
   const validationSchema = Yup.object({
     name: Yup.string()
       .max(50, "Must be 50 characters or less")
       .required("Full Name is Required!!!"),
-    email: Yup.string().email("Invalid email format").required("Email is Required!!!"),
+    email: Yup.string()
+      .email("Invalid email format")
+      .required("Email is Required!!!"),
     password: Yup.string()
       .required("Password is Required!!!")
       .min(6, "Password must be at least 6 characters"),
@@ -72,26 +85,34 @@ const DoctorOnBoard = () => {
       .min(10, "Must be exactly 10 digits")
       .max(10, "Must be exactly 10 digits")
       .required("Contact detils are Required!!!!"),
-      department: Yup.string().required("Department is Required!!!"),
-      gender: Yup.string().required("Gender is Required!!!"),
-    // dateofbirth: Yup.date(),
-    // age: Yup.number(),
-    // consultingfee: Yup.number(),
-    // address: Yup.string(),
-    // day: Yup.string(),
-    // timeSlot: Yup.string(),
-    
+    department: Yup.string().required("Department is Required!!!"),
+    gender: Yup.string().required("Gender is Required!!!"),
+    dateofbirth: Yup.date(),
+    age: Yup.number(),
+    consultingfee: Yup.number(),
+    address: Yup.string(),
+    day: Yup.string(),
+    timeSlot: Yup.string(),
+    // educationalQualification: Yup.mixed().required(
+    //   "Educational Qualification is Required"
+    // ),
   });
 
-  // const addAvailability = (values, setFieldValue) => {
-  //   const newAvailability = [
-  //     ...availability,
-  //     { day: values.day, timeSlot: values.timeSlot },
-  //   ];
-  //   setAvailability(newAvailability);
-  //   setFieldValue("day", "");
-  //   setFieldValue("timeSlot", "");
+  // const handleFileChange = (event, setFieldValue) => {
+  //   const file = event.currentTarget.files[0];
+  //   setFieldValue("educationalQualification", file);
+  //   setEducationalQualificationFile(file);
   // };
+
+  const addAvailability = (values, setFieldValue) => {
+    const newAvailability = [
+      ...availability,
+      { day: values.day, timeSlot: values.timeSlot },
+    ];
+    setAvailability(newAvailability);
+    setFieldValue("day", "");
+    setFieldValue("timeSlot", "");
+  };
   return (
     <div className="flex justify-center items-center min-h-screen bg-gradient-to-r from-blue-200 via-blue-500 to-blue-800">
       <div
@@ -111,18 +132,6 @@ const DoctorOnBoard = () => {
         <Formik
           initialValues={initialValues}
           validationSchema={validationSchema}
-          // onSubmit={(values, { setSubmitting }) => {
-          //   const formValues = { ...values, availability };
-          //   localStorage.setItem("details", JSON.stringify(formValues));
-          //   setSubmitting(true);
-          //   console.log("Submitted values:", formValues);
-          //   toast.success("Form submitted successfully!");
-          //   setSubmitting(false);
-
-          //   setTimeout(() => {
-          //     navigate("/login");
-          //   }, 3000);
-          // }}
           onSubmit={handleSubmit}
         >
           {({ values, setFieldValue }) => (
@@ -149,8 +158,6 @@ const DoctorOnBoard = () => {
                   className="text-red-500 text-sm"
                 />
               </div>
-
-              
 
               <div className="flex flex-col mb-4 mt-4">
                 <label
@@ -213,13 +220,14 @@ const DoctorOnBoard = () => {
                   className="border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400 transition-shadow"
                 >
                   <option value="">Select Department</option>
-                  <option value="cardiology">Cardiology</option>
-                  <option value="dermatology">Dermatology</option>
-                  <option value="neurology">Neurology</option>
-                  <option value="oncology">Oncology</option>
-                  <option value="pediatrics">Pediatrics</option>
-                  <option value="radiology">Radiology</option>
-                  <option value="surgery">Surgery</option>
+                  <option value="Cardiology">Cardiology</option>
+                  <option value="Dermatology">Dermatology</option>
+                  <option value="Neurology">Neurology</option>
+                  <option value="Oncology">Oncology</option>
+                  <option value="Pediatrics">Pediatrics</option>
+                  <option value="Radiology">Radiology</option>
+                  <option value="Surgery">Surgery</option>
+                  <option value="General Medicine">Surgery</option>
                 </Field>
                 <ErrorMessage
                   name="department"
@@ -298,13 +306,9 @@ const DoctorOnBoard = () => {
                   component="div"
                   className="text-red-500 text-sm"
                 />
-                </div>
+              </div>
 
-
-                
-
-              
-              {/* <div className="flex flex-col mb-4">
+              <div className="flex flex-col mb-4">
                 <label
                   htmlFor="dateofbirth"
                   className="font-semibold text-gray-700"
@@ -347,10 +351,9 @@ const DoctorOnBoard = () => {
                   component="div"
                   className="text-red-500 text-sm"
                 />
-              </div> */}
-             
+              </div>
 
-              {/* <div className="flex flex-col mb-4">
+              <div className="flex flex-col mb-4">
                 <label
                   htmlFor="address"
                   className="font-semibold text-gray-700"
@@ -454,8 +457,31 @@ const DoctorOnBoard = () => {
                   component="div"
                   className="text-red-500 text-sm"
                 />
+              </div>
+              {/* <div className="flex flex-col mb-4">
+                <label
+                  htmlFor="educationalQualification"
+                  className="font-semibold text-gray-700"
+                  style={{
+                    textShadow: "1px 1px 1px rgba(0, 0, 0, 0.1)",
+                  }}
+                >
+                  Educational Qualification (PDF)
+                </label>
+                <input
+                  type="file"
+                  id="educationalQualification"
+                  name="educationalQualification"
+                  accept=".pdf"
+                  onChange={(event) => handleFileChange(event, setFieldValue)}
+                  className="border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400 transition-shadow"
+                />
+                <ErrorMessage
+                  name="educationalQualification"
+                  component="div"
+                  className="text-red-500 text-sm"
+                />
               </div> */}
-
               <button
                 className="bg-gradient-to-r from-blue-500 to-teal-500 hover:from-blue-600 hover:to-teal-600 text-white font-semibold py-2 px-4 rounded transition-colors w-full shadow-md"
                 type="submit"

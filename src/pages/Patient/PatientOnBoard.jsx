@@ -48,11 +48,11 @@ const PatientOnBoard = () => {
     confirmpassword: "",
     contact: "",
     gender: "",
-    // dateofbirth: "",
-    // age: "",
-    // bloodgroup: "",
-    // address: "",
-    // medicalHistory: "",
+    dateofbirth: "",
+    age: "",
+    bloodgroup: "",
+    address: "",
+    medicalHistory: "",
   };
 
   const validationSchema = Yup.object({
@@ -77,11 +77,11 @@ const PatientOnBoard = () => {
       .max(10, "Must be exactly 10 digits")
       .required("Contact Details is Required!!!"),
     gender: Yup.string().required("Gender is Required!!!"),
-    // dateofbirth: Yup.date().required("Required"),
-    // age: Yup.number().required("Required"),
-    // bloodgroup: Yup.string().required("Required"),
-    // address: Yup.string().required("Required"),
-    // medicalHistory: Yup.string().required("Required"),
+    dateofbirth: Yup.date().required("Required"),
+    age: Yup.number().required("Required"),
+    bloodgroup: Yup.string().required("Required"),
+    address: Yup.string().required("Required"),
+    medicalHistory: Yup.string().required("Required"),
   });
 
   return (
@@ -259,7 +259,7 @@ const PatientOnBoard = () => {
               />
             </div>
 
-            {/* <div className="flex flex-col">
+            <div className="flex flex-col">
               <label
                 htmlFor="dateofbirth"
                 className="font-semibold text-gray-700"
@@ -280,8 +280,8 @@ const PatientOnBoard = () => {
                 component="div"
                 className="text-red-500 text-sm"
               />
-            </div> */}
-            {/* <div className="flex flex-col">
+            </div>
+            <div className="flex flex-col">
               <label
                 htmlFor="bloodgroup"
                 className="font-semibold text-gray-700"
@@ -333,9 +333,9 @@ const PatientOnBoard = () => {
                 component="div"
                 className="text-red-500 text-sm"
               />
-            </div> */}
+            </div>
 
-            {/* <div className="flex flex-col">
+            <div className="flex flex-col">
               <label
                 htmlFor="address"
                 className="font-semibold text-gray-700"
@@ -378,7 +378,7 @@ const PatientOnBoard = () => {
                 component="div"
                 className="text-red-500 text-sm"
               />
-            </div> */}
+            </div>
 
             <button
               className="bg-gradient-to-r from-blue-500 to-teal-500 hover:from-blue-600 hover:to-teal-600 text-white font-semibold py-2 px-4 rounded transition-colors w-full shadow-md"

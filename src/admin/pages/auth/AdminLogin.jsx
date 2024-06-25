@@ -57,7 +57,7 @@ const AdminLogin = () => {
         </div>
 
         <h1 className="text-3xl font-bold mb-6 text-center text-gray-800">
-          Login
+          Admin-Login
         </h1>
         <Formik
           initialValues={{
