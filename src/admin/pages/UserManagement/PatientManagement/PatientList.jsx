@@ -1,9 +1,14 @@
 import React, { useState } from "react";
+import { RiDeleteBinLine } from 'react-icons/ri';
+import { FaEdit } from "react-icons/fa";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
-const PatientList = ({ data, onDelete, onEdit, onSearch }) => {
+const PatientList = ({ data, onDelete, onEdit }) => {
   const [selectedPatient, setSelectedPatient] = useState(null);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [ searchname, setsearchname] = useState('');
+  const patientsPerPage = 4;
 
   const handleView = (patient) => {
     setSelectedPatient(patient);
@@ -14,7 +19,7 @@ const PatientList = ({ data, onDelete, onEdit, onSearch }) => {
   };
 
   const handleDelete = (id) => {
-    if (window.confirm("Are you sure you want to delete this doctor?")) {
+    if (window.confirm("Are you sure you want to delete this patient?")) {
       onDelete(id);
     }
   };
@@ -29,6 +34,16 @@ const PatientList = ({ data, onDelete, onEdit, onSearch }) => {
 
   const handleEdit = (id) => {
     onEdit(id);
+  };
+
+  const indexOfLastPatient = currentPage * patientsPerPage;
+  const indexOfFirstPatient = indexOfLastPatient - patientsPerPage;
+  const currentPatients = data.slice(indexOfFirstPatient, indexOfLastPatient);
+
+  const totalPages = Math.ceil(data.length / patientsPerPage);
+
+  const handlePageChange = (pageNumber) => {
+    setCurrentPage(pageNumber);
   };
 
   return (
@@ -143,6 +158,7 @@ const PatientList = ({ data, onDelete, onEdit, onSearch }) => {
                 type="text"
                 placeholder="Search patients..."
                 className="w-96 bg-gray-100 p-2 border border-gray-300 rounded"
+                onChange={(e) => {setsearchname(e.target.value)}}
               />
               <button
                 onClick={() => handleCreate()}
@@ -165,7 +181,11 @@ const PatientList = ({ data, onDelete, onEdit, onSearch }) => {
                 </tr>
               </thead>
               <tbody>
-                {data.map((user) => (
+                {currentPatients
+                .filter((user) => {
+                  return searchname.toLowerCase() === "" ? user : user.name.toLowerCase().includes(searchname.toLowerCase())
+                })
+                .map((user) => (
                   <tr key={user._id} className="hover:bg-gray-100">
                     <td className="py-2 px-4 border-b">{user.name}</td>
                     <td className="py-2 px-4 border-b">{user.email}</td>
@@ -182,7 +202,7 @@ const PatientList = ({ data, onDelete, onEdit, onSearch }) => {
                         onClick={() => handleEdit(user._id)}
                         className="bg-yellow-500 text-white py-1 px-3 rounded hover:bg-yellow-700 transition"
                       >
-                        Edit
+                        <FaEdit />
                       </button>
                       <button
                         onClick={() => {
@@ -190,7 +210,7 @@ const PatientList = ({ data, onDelete, onEdit, onSearch }) => {
                         }}
                         className="bg-red-500 text-white py-1 px-3 rounded hover:bg-red-700 transition"
                       >
-                        Delete
+                        <RiDeleteBinLine />
                       </button>
                       <ToastContainer />
                     </td>
@@ -198,9 +218,33 @@ const PatientList = ({ data, onDelete, onEdit, onSearch }) => {
                 ))}
               </tbody>
             </table>
-            <br></br>
-            <br></br>
-            <div className="flex justify-end"> &lt;&lt; 1 &gt;&gt; </div>
+            <div className="flex justify-center mt-4">
+              <button
+                onClick={() => handlePageChange(currentPage - 1)}
+                className="px-3 py-1 mx-1 border rounded"
+                disabled={currentPage === 1}
+              >
+                Previous
+              </button>
+              {[...Array(totalPages)].map((_, index) => (
+                <button
+                  key={index}
+                  onClick={() => handlePageChange(index + 1)}
+                  className={`px-3 py-1 mx-1 border rounded ${
+                    index + 1 === currentPage ? "bg-blue-500 text-white" : ""
+                  }`}
+                >
+                  {index + 1}
+                </button>
+              ))}
+              <button
+                onClick={() => handlePageChange(currentPage + 1)}
+                className="px-3 py-1 mx-1 border rounded"
+                disabled={currentPage === totalPages}
+              >
+                Next
+              </button>
+            </div>
           </div>
         )}
       </div>

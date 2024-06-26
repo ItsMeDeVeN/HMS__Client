@@ -7,6 +7,7 @@ import EditPatientDetails from "./EditPatientDetails";
 const ManagePatient = () => {
   const [data, setData] = useState([]);
   const [selectedPatientId, setSelectedPatientId] = useState(null);
+
   const fetchData = async () => {
     try {
       const res = await axios.get("http://localhost:3000/api/allpatients");
@@ -45,6 +46,7 @@ const ManagePatient = () => {
   const handleCloseEditForm = () => {
     setSelectedPatientId(null);
   };
+
   useEffect(() => {
     fetchData();
   }, []);

@@ -34,7 +34,7 @@ const Navbar = ({ role }) => {
   } 
 
   return (
-    <div className="flex justify-between items-center p-4 h-20 bg-gradient-to-r from-blue-500 to-teal-400 text-white shadow-lg">
+    <div className="flex justify-between items-center p-4 h-20 ml-0 bg-gray-300 text-white shadow-lg">
       <h1 className="text-3xl font-bold text-black">HMS</h1>
       <div className="relative">
         <img

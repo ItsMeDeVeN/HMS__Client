@@ -1,6 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { FaTachometerAlt, FaUserMd, FaMedkit, FaCog, FaHeart, FaCalendarAlt, FaListAlt  } from 'react-icons/fa';
+import profile from './profile.jpg'; // Assuming the image is imported similarly
 
 const Sidebar = ({ role }) => {
   const doctorLinks = [
@@ -34,9 +35,10 @@ const Sidebar = ({ role }) => {
   } 
 
   return (
-    <div className="w-60 h-screen bg-gray-300 text-blue-900 fixed top-0 left-0 flex flex-col p-4">
+    <div className="w-60 h-screen bg-gray-300 text-black fixed top-0 left-0 flex flex-col p-4">
       <div className="mb-6 text-center bg-gray-300">
         <p className='py-2'>_________________________</p>
+        {/* <img src={profile} className='mt-10 hover:bg-gray-400 rounded transition transform hover:scale-105'></img> */}
         <h1 className="text-2xl font-bold">APP LOGO</h1>
         <p className='px-2'>_________________________</p>
       </div>

@@ -1,9 +1,13 @@
 import React, { useState } from "react";
+import { RiDeleteBinLine } from 'react-icons/ri';
+import { FaEdit } from "react-icons/fa";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css"; // Ensure you import the CSS for react-toastify
 
-const DoctorList = ({data,  onVerify,onDelete,onEdit,onSearch,}) => {
+const DoctorList = ({ data, onVerify, onDelete, onEdit, onSearch }) => {
   const [selectedDoctor, setSelectedDoctor] = useState(null);
+  const [currentPage, setCurrentPage] = useState(1);
+  const doctorsPerPage = 6;
 
   const handleView = (doctor) => {
     setSelectedDoctor(doctor);
@@ -28,13 +32,27 @@ const DoctorList = ({data,  onVerify,onDelete,onEdit,onSearch,}) => {
       onDelete(id);
     }
   };
-  
+
   const handleCreate = () => {
-    const newWindow = window.open("/signup/doctor", "_blank", "noopener,noreferrer");
+    window.open("/signup/doctor", "_blank", "noopener,noreferrer");
   };
 
   const handleEdit = (id) => {
     onEdit(id); // Call the onEdit function passed as a prop
+  };
+
+  const handleSearch = (e) => {
+    onSearch(e.target.value);
+  };
+
+  const indexOfLastDoctor = currentPage * doctorsPerPage;
+  const indexOfFirstDoctor = indexOfLastDoctor - doctorsPerPage;
+  const currentDoctors = data.slice(indexOfFirstDoctor, indexOfLastDoctor);
+
+  const totalPages = Math.ceil(data.length / doctorsPerPage);
+
+  const handlePageChange = (pageNumber) => {
+    setCurrentPage(pageNumber);
   };
 
   return (
@@ -192,10 +210,10 @@ const DoctorList = ({data,  onVerify,onDelete,onEdit,onSearch,}) => {
                 type="text"
                 placeholder="Search doctors..."
                 className="w-96 bg-gray-100 p-2 border border-gray-300 rounded"
-                onChange={(e) => onSearch(e.target.value)}
+                onChange={(e) => {handleSearch(e)}}
               />
               <button
-                onClick={() => handleCreate("Doctor")}
+                onClick={handleCreate}
                 className="bg-yellow-500 text-white py-2 px-4 rounded hover:bg-yellow-700 transition"
               >
                 + Create
@@ -215,7 +233,7 @@ const DoctorList = ({data,  onVerify,onDelete,onEdit,onSearch,}) => {
                 </tr>
               </thead>
               <tbody>
-                {data.map((user) => (
+                {currentDoctors.map((user) => (
                   <tr key={user._id} className="hover:bg-gray-100">
                     <td className="py-2 px-4 border-b">{user.name}</td>
                     <td className="py-2 px-4 border-b">{user.email}</td>
@@ -232,7 +250,7 @@ const DoctorList = ({data,  onVerify,onDelete,onEdit,onSearch,}) => {
                         onClick={() => handleVerify(user._id, user.verified)}
                         className={`py-1 px-3 rounded ${
                           user.verified
-                            ? "bg-green-500 hover:bg-green-700"
+                            ? "bg-green-500 hover:bg-green-700 w-24"
                             : "bg-red-500 hover:bg-red-700"
                         } text-white transition`}
                       >
@@ -242,15 +260,16 @@ const DoctorList = ({data,  onVerify,onDelete,onEdit,onSearch,}) => {
                         onClick={() => handleEdit(user._id)}
                         className="bg-yellow-500 text-white py-1 px-3 rounded hover:bg-yellow-700 transition"
                       >
-                        Edit
+                        <FaEdit />
                       </button>
                       <button
                         onClick={() => {
                           handleDelete(user._id);
                         }}
+                        
                         className="bg-red-500 text-white py-1 px-3 rounded hover:bg-red-700 transition"
                       >
-                        Delete
+                        <RiDeleteBinLine />
                       </button>
                       <ToastContainer />
                     </td>
@@ -258,9 +277,33 @@ const DoctorList = ({data,  onVerify,onDelete,onEdit,onSearch,}) => {
                 ))}
               </tbody>
             </table>
-            <br></br>
-            <br></br>
-            <div className="flex justify-end"> &lt;&lt; 1 &gt;&gt; </div>
+            <div className="flex justify-center mt-4">
+              <button
+                onClick={() => handlePageChange(currentPage - 1)}
+                className="px-3 py-1 mx-1 border rounded"
+                disabled={currentPage === 1}
+              >
+                Previous
+              </button>
+              {[...Array(totalPages)].map((_, index) => (
+                <button
+                  key={index}
+                  onClick={() => handlePageChange(index + 1)}
+                  className={`px-3 py-1 mx-1 border rounded ${
+                    index + 1 === currentPage ? "bg-blue-500 text-white" : ""
+                  }`}
+                >
+                  {index + 1}
+                </button>
+              ))}
+              <button
+                onClick={() => handlePageChange(currentPage + 1)}
+                className="px-3 py-1 mx-1 border rounded"
+                disabled={currentPage === totalPages}
+              >
+                Next
+              </button>
+            </div>
           </div>
         )}
       </div>

@@ -69,6 +69,7 @@ const EditPatientDetails = ({ patientId, onClose, onUpdate }) => {
             },
           });
         }
+
     } catch (e) {
       console.error("Error updating doctor details:", e);
     } finally {

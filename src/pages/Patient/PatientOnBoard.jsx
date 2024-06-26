@@ -81,7 +81,7 @@ const PatientOnBoard = () => {
     age: Yup.number().required("Required"),
     bloodgroup: Yup.string().required("Required"),
     address: Yup.string().required("Required"),
-    medicalHistory: Yup.string().required("Required"),
+    medicalHistory: Yup.string(),
   });
 
   return (

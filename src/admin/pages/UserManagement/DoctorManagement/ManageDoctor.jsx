@@ -10,9 +10,11 @@ const ManageDoctor = () => {
   const [data, setData] = useState([]);
   const [selectedDoctorId, setSelectedDoctorId] = useState(null);
 
-  const fetchData = async () => {
+  const fetchData =  async () => {
     try {
       const res = await axios.get(`http://localhost:3000/api/alldoctors`);
+      // For pagination implementation
+      // const res = await axios.get(`http://localhost:3000/api/alldoctors?page={currentPage}&limit={doctorsPerPage}`);
       if (res.status === 200) {
         setData(res.data.doctors);
       }
@@ -23,18 +25,19 @@ const ManageDoctor = () => {
 
   const onVerify = async (id) => {
     try {
-    const res = await axios.post("http://localhost:3000/api/verified", {
-      id,
-    });
-    if (res.status === 200) {
-      toast.success(res.data.message, {
-        onClose: fetchData, // Ensure fetchData is defined and accessible here
+      const res = await axios.post("http://localhost:3000/api/verified", {
+        id,
       });
+      if (res.status === 200) {
+        toast.success(res.data.message, {
+          onClose: fetchData, // Ensure fetchData is defined and accessible here
+        });
+      }
+    } catch (e) {
+      console.error("Error verifying doctor:", e);
+      toast.error("Error verifying doctor");
     }
-  } catch (e) {
-    console.error("Error verifying doctor:", e);
-  }
-};
+  };
 
   const onDelete = async (id) => {
     try {
@@ -48,6 +51,7 @@ const ManageDoctor = () => {
       }
     } catch (e) {
       console.error("Error deleting doctor:", e);
+      toast.error("Error deleting doctor");
     }
   };
 
@@ -57,6 +61,10 @@ const ManageDoctor = () => {
 
   const handleCloseEditForm = () => {
     setSelectedDoctorId(null); // Close the EditDoctorForm by clearing the selected doctor ID
+  };
+
+  const onSearch = (value) => {
+    console.log(value)
   };
 
   useEffect(() => {
@@ -70,6 +78,7 @@ const ManageDoctor = () => {
         onVerify={onVerify}
         onDelete={onDelete}
         onEdit={onEdit}
+        onSearch={onSearch}
       />
       {selectedDoctorId && (
         <EditDOCDetails

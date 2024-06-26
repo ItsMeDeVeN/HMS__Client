@@ -18,6 +18,7 @@ const EditDOCDetails = ({ doctorId, onClose, onUpdate }) => {
     availability: [],
     consultingfee: "",
   });
+
   useEffect(() => {
     const fetchDoctorDetails = async () => {
       try {
