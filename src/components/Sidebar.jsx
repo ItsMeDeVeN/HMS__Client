@@ -7,7 +7,7 @@ const Sidebar = ({ role }) => {
   const doctorLinks = [
     { to: "/DoctorDashBoard", icon: <FaTachometerAlt className="mr-3" />, label: "Dashboard" },
     { to: "/DoctorDashBoard/Appointments", icon: <FaUserMd className="mr-3" />, label: "Appointments" },
-    { to: "/DoctorDashBoard/Services", icon: <FaMedkit className="mr-3" />, label: "Services" },
+    { to: "/DoctorDashBoard/Services", icon: <FaMedkit className="mr-3" />, label: "DOCList" },
     { to: "/DoctorDashBoard/Settings", icon: <FaCog className="mr-3" />, label: "Settings" }
   ];
 

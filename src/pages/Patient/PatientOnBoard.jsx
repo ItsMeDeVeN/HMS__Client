@@ -1,4 +1,4 @@
-import React,{useState} from "react";
+import React, { useState } from "react";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import { ToastContainer, toast } from "react-toastify";
@@ -6,22 +6,24 @@ import "react-toastify/dist/ReactToastify.css";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
-
-
 const PatientOnBoard = () => {
-  
   const [submitting, setSubmitting] = useState(false);
 
   const handleSubmit = async (values) => {
     try {
       setSubmitting(true);
-      const res = await axios.post("http://localhost:3000/api/registerpatient", values);
+      const res = await axios.post(
+        "http://localhost:3000/api/registerpatient",
+        values
+      );
       console.log(res);
       handleResponse(res.status, res.data.message);
     } catch (e) {
       console.log(e);
       const status = e.response ? e.response.status : 500;
-      const message = e.response ? e.response.data.message : "An error occurred";
+      const message = e.response
+        ? e.response.data.message
+        : "An error occurred";
       handleResponse(status, message);
     } finally {
       setSubmitting(false);
@@ -139,8 +141,6 @@ const PatientOnBoard = () => {
               />
             </div>
 
-            
-
             <div className="flex flex-col">
               <label
                 htmlFor="email"
@@ -212,7 +212,7 @@ const PatientOnBoard = () => {
                 className="text-red-500 text-sm"
               />
             </div>
-            
+
             <div className="flex flex-col">
               <label
                 htmlFor="password"

@@ -22,7 +22,9 @@ const EditDOCDetails = ({ doctorId, onClose, onUpdate }) => {
   useEffect(() => {
     const fetchDoctorDetails = async () => {
       try {
-        const res = await axios.post("http://localhost:3000/api/getdetails", { id: doctorId });
+        const res = await axios.post("http://localhost:3000/api/getdetails", {
+          id: doctorId,
+        });
         setFormData(res.data.details);
       } catch (e) {
         console.error("Error fetching doctor details:", e);
@@ -45,9 +47,20 @@ const EditDOCDetails = ({ doctorId, onClose, onUpdate }) => {
   };
 
   const validationSchema = Yup.object({
-    name: Yup.string().required("Name is required"),
-    email: Yup.string().email("Invalid email address").required("Email is required"),
-    contact: Yup.string().required("Contact is required"),
+    name: Yup.string()
+      .max(50, "Must be 50 characters or less")
+      .required("Full Name is Required!!!"),
+    email: Yup.string()
+      .matches(
+        /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
+        "Invalid Email Format"
+      )
+      .required("Email is Required!!!"),
+    contact: Yup.string()
+      .matches(/^[0-9]+$/, "Must be only digits")
+      .min(10, "Must be exactly 10 digits")
+      .max(10, "Must be exactly 10 digits")
+      .required("Contact Details is Required!!!"),
     address: Yup.string().required("Address is required"),
     gender: Yup.string().required("Gender is required"),
     dateofbirth: Yup.date().required("Date of Birth is required"),
@@ -64,7 +77,10 @@ const EditDOCDetails = ({ doctorId, onClose, onUpdate }) => {
 
   const handleSubmit = async (values, { setSubmitting }) => {
     try {
-      const res = await axios.post("http://localhost:3000/api/updateDoctor", { ...values, _id: doctorId });
+      const res = await axios.post("http://localhost:3000/api/updateDoctor", {
+        ...values,
+        _id: doctorId,
+      });
       if (res.status === 200) {
         toast.success("Doctor details updated successfully!", {
           onClose: () => {
@@ -72,7 +88,7 @@ const EditDOCDetails = ({ doctorId, onClose, onUpdate }) => {
             onClose();
           },
         });
-      } 
+      }
     } catch (e) {
       console.error("Error updating doctor details:", e);
     } finally {
@@ -83,10 +99,7 @@ const EditDOCDetails = ({ doctorId, onClose, onUpdate }) => {
   const addAvailability = (values, setFieldValue) => {
     const { availability, day, timeSlot } = values;
     if (day && timeSlot) {
-      setFieldValue("availability", [
-        ...availability,
-        { day, timeSlot },
-      ]);
+      setFieldValue("availability", [...availability, { day, timeSlot }]);
       setFieldValue("day", "");
       setFieldValue("timeSlot", "");
     }
@@ -118,7 +131,11 @@ const EditDOCDetails = ({ doctorId, onClose, onUpdate }) => {
                   name="name"
                   className="border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400 transition-shadow"
                 />
-                <ErrorMessage name="name" component="div" className="text-red-500 text-sm" />
+                <ErrorMessage
+                  name="name"
+                  component="div"
+                  className="text-red-500 text-sm"
+                />
               </div>
               <div className="flex flex-col mb-4">
                 <label
@@ -133,7 +150,11 @@ const EditDOCDetails = ({ doctorId, onClose, onUpdate }) => {
                   name="email"
                   className="border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400 transition-shadow"
                 />
-                <ErrorMessage name="email" component="div" className="text-red-500 text-sm" />
+                <ErrorMessage
+                  name="email"
+                  component="div"
+                  className="text-red-500 text-sm"
+                />
               </div>
               <div className="flex flex-col mb-4">
                 <label
@@ -148,7 +169,11 @@ const EditDOCDetails = ({ doctorId, onClose, onUpdate }) => {
                   name="contact"
                   className="border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400 transition-shadow"
                 />
-                <ErrorMessage name="contact" component="div" className="text-red-500 text-sm" />
+                <ErrorMessage
+                  name="contact"
+                  component="div"
+                  className="text-red-500 text-sm"
+                />
               </div>
               <div className="flex flex-col mb-4">
                 <label
@@ -163,7 +188,11 @@ const EditDOCDetails = ({ doctorId, onClose, onUpdate }) => {
                   name="address"
                   className="border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400 transition-shadow"
                 />
-                <ErrorMessage name="address" component="div" className="text-red-500 text-sm" />
+                <ErrorMessage
+                  name="address"
+                  component="div"
+                  className="text-red-500 text-sm"
+                />
               </div>
               <div className="flex flex-col mb-4">
                 <label
@@ -183,7 +212,11 @@ const EditDOCDetails = ({ doctorId, onClose, onUpdate }) => {
                   <option value="Female">Female</option>
                   <option value="Others">Others</option>
                 </Field>
-                <ErrorMessage name="gender" component="div" className="text-red-500 text-sm" />
+                <ErrorMessage
+                  name="gender"
+                  component="div"
+                  className="text-red-500 text-sm"
+                />
               </div>
               <div className="flex flex-col mb-4">
                 <label
@@ -198,7 +231,11 @@ const EditDOCDetails = ({ doctorId, onClose, onUpdate }) => {
                   name="dateofbirth"
                   className="border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400 transition-shadow"
                 />
-                <ErrorMessage name="dateofbirth" component="div" className="text-red-500 text-sm" />
+                <ErrorMessage
+                  name="dateofbirth"
+                  component="div"
+                  className="text-red-500 text-sm"
+                />
               </div>
               <div className="flex flex-col mb-4">
                 <label
@@ -213,7 +250,11 @@ const EditDOCDetails = ({ doctorId, onClose, onUpdate }) => {
                   name="age"
                   className="border border-gray-300                   rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400 transition-shadow"
                 />
-                <ErrorMessage name="age" component="div" className="text-red-500 text-sm" />
+                <ErrorMessage
+                  name="age"
+                  component="div"
+                  className="text-red-500 text-sm"
+                />
               </div>
 
               <div className="flex flex-col mb-4">
@@ -260,7 +301,11 @@ const EditDOCDetails = ({ doctorId, onClose, onUpdate }) => {
                   name="consultingfee"
                   className="border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400 transition-shadow"
                 />
-                <ErrorMessage name="consultingfee" component="div" className="text-red-500 text-sm" />
+                <ErrorMessage
+                  name="consultingfee"
+                  component="div"
+                  className="text-red-500 text-sm"
+                />
               </div>
 
               {/* Availability Section */}
@@ -353,4 +398,3 @@ const EditDOCDetails = ({ doctorId, onClose, onUpdate }) => {
 };
 
 export default EditDOCDetails;
-

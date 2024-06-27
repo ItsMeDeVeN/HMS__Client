@@ -45,11 +45,20 @@ const EditPatientDetails = ({ patientId, onClose, onUpdate }) => {
   };
 
   const validationSchema = Yup.object({
-    name: Yup.string().required("Name is required"),
+    name: Yup.string()
+      .max(50, "Must be 50 characters or less")
+      .required("Full Name is Required!!!"),
     email: Yup.string()
-      .email("Invalid email address")
-      .required("Email is required"),
-    contact: Yup.string().required("Contact is required"),
+      .matches(
+        /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
+        "Invalid Email Format"
+      )
+      .required("Email is Required!!!"),
+    contact: Yup.string()
+      .matches(/^[0-9]+$/, "Must be only digits")
+      .min(10, "Must be exactly 10 digits")
+      .max(10, "Must be exactly 10 digits")
+      .required("Contact Details is Required!!!"),
     gender: Yup.string().required("Gender is required"),
     dateofbirth: Yup.date().required("Date of Birth is required"),
     bloodgroup: Yup.string().required("Bloodgroup is required"),
@@ -60,16 +69,18 @@ const EditPatientDetails = ({ patientId, onClose, onUpdate }) => {
 
   const handleSubmit = async (values, { setSubmitting }) => {
     try {
-        const res = await axios.post("http://localhost:3000/api/updatePatient", { ...values, _id: patientId });
-        if (res.status === 200) {
-          toast.success("Patient details updated successfully!", {
-            onClose: () => {
-              onUpdate();
-              onClose();
-            },
-          });
-        }
-
+      const res = await axios.post("http://localhost:3000/api/updatePatient", {
+        ...values,
+        _id: patientId,
+      });
+      if (res.status === 200) {
+        toast.success("Patient details updated successfully!", {
+          onClose: () => {
+            onUpdate();
+            onClose();
+          },
+        });
+      }
     } catch (e) {
       console.error("Error updating doctor details:", e);
     } finally {

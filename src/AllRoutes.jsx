@@ -6,7 +6,7 @@ import { BrowserRouter, Route, Routes } from "react-router-dom";
 import DoctorOnBoard from "./pages/Doctor/DoctorOnBoard";
 import DoctorDashBoard from "./pages/Doctor/DoctorDashboard";
 import DOC_Appointments from "./pages/Doctor/DOC_Appointments";
-import DOC_Services from "./pages/Doctor/DOC_Services";
+import DOC_DOCList from "./pages/Doctor/DOC_DOCList";
 import DOC_Settings from "./pages/Doctor/DOC_Settings";
 
 import PatientOnBoard from "./pages/Patient/PatientOnBoard";
@@ -22,7 +22,7 @@ import NotFound from "./NotFound";
 import AdminDashboard from "./admin/pages/AdminDashboard";
 import AdminSettings from "./admin/pages/AdminSettings";
 import ManageDoctor from "./admin/pages/UserManagement/DoctorManagement/ManageDoctor";
-import ManagePatient from "./admin/pages/UserManagement/PateintManagement/ManagePatient";
+import ManagePatient from "./admin/pages/UserManagement/PatientManagement/ManagePatient";
 import AdminLogin from "./admin/pages/auth/AdminLogin";
 import EditDOCDetails from "./admin/pages/UserManagement/DoctorManagement/EditDOCDetails";
 const AllRoutes = () => {
@@ -49,7 +49,7 @@ const AllRoutes = () => {
           {/* <Route element={<ProtectedRoute allowedRoles="Doctor"/>}> */}
           <Route path="/DoctorDashBoard" element={<DoctorDashBoard />}></Route>
           <Route path="/DoctorDashBoard/Appointments" element={<DOC_Appointments />}></Route>
-          <Route path="/DoctorDashBoard/Services" element={<DOC_Services />}></Route>
+          <Route path="/DoctorDashBoard/Services" element={<DOC_DOCList />}></Route>
           <Route path="/DoctorDashBoard/Settings" element={<DOC_Settings />}></Route>
           {/* </Route> */}
 

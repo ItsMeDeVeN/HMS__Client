@@ -1,4 +1,6 @@
 import { useEffect, useState } from "react";
+import { useImmer } from "use-immer";
+import { useDebounce } from "use-debounce";
 import DoctorList from "./DoctorList";
 import axios from "axios";
 import AdminDashboardlayout from "../../../layout/AdminDashboardlayout";
@@ -9,18 +11,50 @@ import "react-toastify/dist/ReactToastify.css"; // Ensure you import the CSS for
 const ManageDoctor = () => {
   const [data, setData] = useState([]);
   const [selectedDoctorId, setSelectedDoctorId] = useState(null);
+  const [totalPages, settotalPages] = useState(null);
+  const [filterData, setFilterData] = useImmer({
+    page: 1,
+    pageSize: 4,
+    searchText: "",
+  });
+  const [searchText, setSearchText] = useState("");
 
-  const fetchData =  async () => {
+  const [debouncedSearchText] = useDebounce(searchText, 500);
+
+  const fetchData = async () => {
     try {
-      const res = await axios.get(`http://localhost:3000/api/alldoctors`);
-      // For pagination implementation
-      // const res = await axios.get(`http://localhost:3000/api/alldoctors?page={currentPage}&limit={doctorsPerPage}`);
+      const res = await axios.get(
+        `http://localhost:3000/api/alldoctors?page=${filterData?.page}&limit=${filterData?.pageSize}&search=${filterData?.searchText}`
+      );
       if (res.status === 200) {
         setData(res.data.doctors);
+        settotalPages(res.data.totalPages);
       }
     } catch (e) {
       console.error("Error fetching data:", e);
+      toast.error("Failed to fetch data.");
     }
+  };
+
+  useEffect(() => {
+    fetchData();
+  }, [filterData]);
+
+  useEffect(() => {
+    setFilterData((draft) => {
+      draft.searchText = debouncedSearchText;
+      draft.page = 1; // Reset to first page on new search
+    });
+  }, [debouncedSearchText]);
+
+  const onSearch = (value) => {
+    setSearchText(value);
+  };
+
+  const onPageChange = (pageNumber) => {
+    setFilterData((draft) => {
+      draft.page = pageNumber;
+    });
   };
 
   const onVerify = async (id) => {
@@ -29,9 +63,7 @@ const ManageDoctor = () => {
         id,
       });
       if (res.status === 200) {
-        toast.success(res.data.message, {
-          onClose: fetchData, // Ensure fetchData is defined and accessible here
-        });
+        toast.success(res.data.message, { onClose: fetchData });
       }
     } catch (e) {
       console.error("Error verifying doctor:", e);
@@ -45,9 +77,7 @@ const ManageDoctor = () => {
         data: { id },
       });
       if (res.status === 200) {
-        toast.success(res.data.message, {
-          onClose: fetchData,
-        });
+        toast.success(res.data.message, { onClose: fetchData });
       }
     } catch (e) {
       console.error("Error deleting doctor:", e);
@@ -63,14 +93,6 @@ const ManageDoctor = () => {
     setSelectedDoctorId(null); // Close the EditDoctorForm by clearing the selected doctor ID
   };
 
-  const onSearch = (value) => {
-    console.log(value)
-  };
-
-  useEffect(() => {
-    fetchData();
-  }, []);
-
   return (
     <AdminDashboardlayout>
       <DoctorList
@@ -79,6 +101,9 @@ const ManageDoctor = () => {
         onDelete={onDelete}
         onEdit={onEdit}
         onSearch={onSearch}
+        onPageChange={onPageChange}
+        currentPage={filterData.page}
+        totalPages={totalPages}
       />
       {selectedDoctorId && (
         <EditDOCDetails

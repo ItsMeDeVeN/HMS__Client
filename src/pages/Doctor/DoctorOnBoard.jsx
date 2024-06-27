@@ -10,7 +10,7 @@ const DoctorOnBoard = () => {
   const navigate = useNavigate();
   const [availability, setAvailability] = useState([]);
   // const [educationalQualificationFile, setEducationalQualificationFile] =
-    useState(null);
+  useState(null);
   const [submitting, setSubmitting] = useState(false);
 
   const handleSubmit = async (values) => {
@@ -26,7 +26,9 @@ const DoctorOnBoard = () => {
       // });
 
       const res = await axios.post(
-        "http://localhost:3000/api/registerdoctor",values);
+        "http://localhost:3000/api/registerdoctor",
+        values
+      );
 
       handleResponse(res.status, res.data.message);
     } catch (e) {
@@ -87,12 +89,12 @@ const DoctorOnBoard = () => {
       .required("Contact detils are Required!!!!"),
     department: Yup.string().required("Department is Required!!!"),
     gender: Yup.string().required("Gender is Required!!!"),
-    dateofbirth: Yup.date(),
-    age: Yup.number(),
-    consultingfee: Yup.number(),
-    address: Yup.string(),
-    day: Yup.string(),
-    timeSlot: Yup.string(),
+    dateofbirth: Yup.date().required("DateOfBirth is Required!!!"),
+    age: Yup.number().required("Age is Required!!!"),
+    consultingfee: Yup.number().required("Consulting Fee is Required!!!"),
+    address: Yup.string().required("Address is Required!!!"),
+    day: Yup.string().required("Day is required"),
+    timeSlot: Yup.string().required("Time Slot is required"),
     // educationalQualification: Yup.mixed().required(
     //   "Educational Qualification is Required"
     // ),

@@ -1,50 +1,19 @@
 import React, { useState } from "react";
-import { RiDeleteBinLine } from 'react-icons/ri';
+import { RiDeleteBinLine } from "react-icons/ri";
 import { FaEdit } from "react-icons/fa";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
-const PatientList = ({ data, onDelete, onEdit }) => {
+const PatientList = ({
+  data,
+  onDelete,
+  onEdit,
+  onSearch,
+  onPageChange,
+  currentPage,
+  totalPages,
+}) => {
   const [selectedPatient, setSelectedPatient] = useState(null);
-  const [currentPage, setCurrentPage] = useState(1);
-  const [ searchname, setsearchname] = useState('');
-  const patientsPerPage = 4;
-
-  const handleView = (patient) => {
-    setSelectedPatient(patient);
-  };
-
-  const handleBack = () => {
-    setSelectedPatient(null);
-  };
-
-  const handleDelete = (id) => {
-    if (window.confirm("Are you sure you want to delete this patient?")) {
-      onDelete(id);
-    }
-  };
-
-  const handleCreate = () => {
-    const newWindow = window.open(
-      "/signup/Patient",
-      "_blank",
-      "noopener,noreferrer"
-    );
-  };
-
-  const handleEdit = (id) => {
-    onEdit(id);
-  };
-
-  const indexOfLastPatient = currentPage * patientsPerPage;
-  const indexOfFirstPatient = indexOfLastPatient - patientsPerPage;
-  const currentPatients = data.slice(indexOfFirstPatient, indexOfLastPatient);
-
-  const totalPages = Math.ceil(data.length / patientsPerPage);
-
-  const handlePageChange = (pageNumber) => {
-    setCurrentPage(pageNumber);
-  };
 
   return (
     <div className="flex justify-center bg-gray-200 max-w-full mx-3">
@@ -52,7 +21,9 @@ const PatientList = ({ data, onDelete, onEdit }) => {
         {selectedPatient ? (
           <div className="">
             <button
-              onClick={handleBack}
+              onClick={() => {
+                setSelectedPatient(null);
+              }}
               className="bg-gray-500 text-white py-1 px-3 rounded hover:bg-gray-700 mb-4 inline-block"
             >
               Back
@@ -158,10 +129,18 @@ const PatientList = ({ data, onDelete, onEdit }) => {
                 type="text"
                 placeholder="Search patients..."
                 className="w-96 bg-gray-100 p-2 border border-gray-300 rounded"
-                onChange={(e) => {setsearchname(e.target.value)}}
+                onChange={(e) => {
+                  onSearch(e.target.value);
+                }}
               />
               <button
-                onClick={() => handleCreate()}
+                onClick={() => {
+                  window.open(
+                    "/signup/Patient",
+                    "_blank",
+                    "noopener,noreferrer"
+                  );
+                }}
                 className="bg-yellow-500 text-white py-2 px-4 rounded hover:bg-yellow-700 transition"
               >
                 + Create
@@ -181,55 +160,74 @@ const PatientList = ({ data, onDelete, onEdit }) => {
                 </tr>
               </thead>
               <tbody>
-                {currentPatients
-                .filter((user) => {
-                  return searchname.toLowerCase() === "" ? user : user.name.toLowerCase().includes(searchname.toLowerCase())
-                })
-                .map((user) => (
-                  <tr key={user._id} className="hover:bg-gray-100">
-                    <td className="py-2 px-4 border-b">{user.name}</td>
-                    <td className="py-2 px-4 border-b">{user.email}</td>
-                    <td className="py-2 px-4 border-b">{user.contact}</td>
-                    <td className="py-2 px-4 border-b">{user.gender}</td>
-                    <td className="py-2 px-4 border-b flex space-x-2">
-                      <button
-                        onClick={() => handleView(user)}
-                        className="bg-blue-500 text-white py-1 px-3 rounded hover:bg-blue-700 transition"
-                      >
-                        View
-                      </button>
-                      <button
-                        onClick={() => handleEdit(user._id)}
-                        className="bg-yellow-500 text-white py-1 px-3 rounded hover:bg-yellow-700 transition"
-                      >
-                        <FaEdit />
-                      </button>
-                      <button
-                        onClick={() => {
-                          handleDelete(user._id);
-                        }}
-                        className="bg-red-500 text-white py-1 px-3 rounded hover:bg-red-700 transition"
-                      >
-                        <RiDeleteBinLine />
-                      </button>
-                      <ToastContainer />
+                {data && Array.isArray(data) && data.length > 0 ? (
+                  data.map((user) => (
+                    <tr key={user._id} className="hover:bg-gray-100">
+                      <td className="py-2 px-4 border-b">{user.name}</td>
+                      <td className="py-2 px-4 border-b">{user.email}</td>
+                      <td className="py-2 px-4 border-b">{user.contact}</td>
+                      <td className="py-2 px-4 border-b">{user.gender}</td>
+                      <td className="py-2 px-4 border-b flex space-x-2">
+                        <button
+                          onClick={() => {
+                            setSelectedPatient(user);
+                          }}
+                          className="bg-blue-500 text-white py-1 px-3 rounded hover:bg-blue-700 transition"
+                        >
+                          View
+                        </button>
+                        <button
+                          onClick={() => {
+                            onEdit(user._id);
+                          }}
+                          className="bg-yellow-500 text-white py-1 px-3 rounded hover:bg-yellow-700 transition"
+                        >
+                          <FaEdit />
+                        </button>
+                        <button
+                          onClick={() => {
+                            if (
+                              window.confirm(
+                                "Are you sure you want to delete this patient?"
+                              )
+                            ) {
+                              onDelete(user._id);
+                            }
+                          }}
+                          className="bg-red-500 text-white py-1 px-3 rounded hover:bg-red-700 transition"
+                        >
+                          <RiDeleteBinLine />
+                        </button>
+                        <ToastContainer />
+                      </td>
+                    </tr>
+                  ))
+                ) : (
+                  <tr>
+                    <td
+                      colSpan="5"
+                      className="py-4 px-4 text-center text-gray-500"
+                    >
+                      NO DATA FOUND
                     </td>
                   </tr>
-                ))}
+                )}
               </tbody>
             </table>
             <div className="flex justify-center mt-4">
               <button
-                onClick={() => handlePageChange(currentPage - 1)}
-                className="px-3 py-1 mx-1 border rounded"
+                onClick={() => onPageChange(currentPage - 1)}
+                className={`px-3 py-1 mx-1 border rounded ${
+                  currentPage === 1 ? "opacity-50 cursor-not-allowed" : ""
+                }`}
                 disabled={currentPage === 1}
               >
                 Previous
               </button>
-              {[...Array(totalPages)].map((_, index) => (
+              {Array.from({ length: totalPages }, (_, index) => (
                 <button
                   key={index}
-                  onClick={() => handlePageChange(index + 1)}
+                  onClick={() => onPageChange(index + 1)}
                   className={`px-3 py-1 mx-1 border rounded ${
                     index + 1 === currentPage ? "bg-blue-500 text-white" : ""
                   }`}
@@ -238,8 +236,12 @@ const PatientList = ({ data, onDelete, onEdit }) => {
                 </button>
               ))}
               <button
-                onClick={() => handlePageChange(currentPage + 1)}
-                className="px-3 py-1 mx-1 border rounded"
+                onClick={() => onPageChange(currentPage + 1)}
+                className={`px-3 py-1 mx-1 border rounded ${
+                  currentPage === totalPages
+                    ? "opacity-50 cursor-not-allowed"
+                    : ""
+                }`}
                 disabled={currentPage === totalPages}
               >
                 Next
