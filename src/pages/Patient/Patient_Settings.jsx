@@ -1,229 +1,117 @@
-import React from "react";
-import { Formik, Form, Field, ErrorMessage } from "formik";
-import * as Yup from "yup";
+import React, { useEffect, useState } from "react";
+import { ToastContainer } from "react-toastify";
+import profile from "../../components/profile.jpg"
 import PatientDashboardlayout from "../../layouts/PatientDashboardlayout";
-
-const validationSchema = Yup.object({
-  name: Yup.string().required("Name is required"),
-  email: Yup.string()
-    .email("Invalid email format")
-    .required("Email is required"),
-  contact: Yup.string().required("Contact is required"),
-  gender: Yup.string().required("Gender is required"),
-  dateOfBirth: Yup.date().required("Date of Birth is required"),
-  age: Yup.number().required("Age is required"),
-  bloodGroup: Yup.string().required("Blood Group is required"),
-  address: Yup.string().required("Address is required"),
-  medicalHistory: Yup.string().required("Medical History is required"),
-});
-
-const initialValues = {
-  name: "",
-  email: "",
-  contact: "",
-  gender: "",
-  dateOfBirth: "",
-  age: "",
-  bloodGroup: "",
-  address: "",
-  medicalHistory: "",
-};
-
-const handleFormSubmit = (values) => {
-  console.log(values);
-  // Implement the logic to send data to the backend and update MongoDB
-};
+import axios from "axios";
 
 const Patient_Settings = () => {
+  const id = localStorage.getItem("User_Id");
+  const [data, setData] = useState([])
+
+  const fetchData = async () => {
+    try {
+      const res = await axios.post("http://localhost:3000/api/getdetails", {
+        id: id,
+      });
+      if (res.data && res.data.details) {
+        setData(res.data.details);
+      } else {
+        console.error("Invalid response structure:", res.data);
+      }
+    } catch (e) {
+      console.error("Error fetching doctor details:", e);
+    }
+  };
+
+  useEffect(() => {
+    fetchData();
+  }, []);
   return (
     <div className="bg-slate-800 min-h-screen">
       <PatientDashboardlayout>
-        <div className="flex justify-center items-center h-16 bg-gray-800 text-2xl font-bold text-gray-300">
-          Settings
-        </div>
+      <div className="min-h-screen bg-gray-100">
+        <div className="flex justify-between items-center h-20 bg-gradient-to-r from-gray-800 to-gray-700 text-gray-100 text-2xl font-bold px-6 shadow-lg">
+          <span className="tracking-wide">Doctor Profile</span>
+          <button
+            onClick={() => {
 
-        <div className="py-6 px-8 mb-0 bg-gray-900 text-yellow-200 text-xl font-semibold rounded-md shadow-lg flex items-center justify-center my-4">
-          Profile Details
-        </div>
-
-        <div className="p-8 pt-0">
-          <Formik
-            initialValues={initialValues}
-            validationSchema={validationSchema}
-            onSubmit={handleFormSubmit}
+            }}
+            className="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-6 rounded-full transition duration-300 ease-in-out transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-blue-400"
           >
-            {({ isSubmitting }) => (
-              <Form className="space-y-6 bg-gray-300 p-8 rounded-md shadow-md">
-                <div className="flex flex-col">
-                  <label htmlFor="name" className="text-gray-700">
-                    Name
-                  </label>
-                  <Field
-                    name="name"
-                    type="text"
-                    className="mt-1 p-2 border rounded-md"
-                  />
-                  <ErrorMessage
-                    name="name"
-                    component="div"
-                    className="text-red-500 text-sm"
-                  />
-                </div>
-
-                <div className="flex flex-col">
-                  <label htmlFor="email" className="text-gray-700">
-                    Email
-                  </label>
-                  <Field
-                    name="email"
-                    type="email"
-                    className="mt-1 p-2 border rounded-md"
-                  />
-                  <ErrorMessage
-                    name="email"
-                    component="div"
-                    className="text-red-500 text-sm"
-                  />
-                </div>
-
-                <div className="flex flex-col">
-                  <label htmlFor="contact" className="text-gray-700">
-                    Contact
-                  </label>
-                  <Field
-                    name="contact"
-                    type="text"
-                    className="mt-1 p-2 border rounded-md"
-                  />
-                  <ErrorMessage
-                    name="contact"
-                    component="div"
-                    className="text-red-500 text-sm"
-                  />
-                </div>
-
-                <div className="flex flex-col">
-                  <label htmlFor="gender" className="text-gray-700">
-                    Gender
-                  </label>
-                  <Field
-                    name="gender"
-                    as="select"
-                    className="mt-1 p-2 border rounded-md"
-                  >
-                    <option value="">Select Gender</option>
-                    <option value="male">Male</option>
-                    <option value="female">Female</option>
-                    <option value="other">Other</option>
-                  </Field>
-                  <ErrorMessage
-                    name="gender"
-                    component="div"
-                    className="text-red-500 text-sm"
-                  />
-                </div>
-
-                <div className="flex flex-col">
-                  <label htmlFor="dateOfBirth" className="text-gray-700">
-                    Date of Birth
-                  </label>
-                  <Field
-                    name="dateOfBirth"
-                    type="date"
-                    className="mt-1 p-2 border rounded-md"
-                  />
-                  <ErrorMessage
-                    name="dateOfBirth"
-                    component="div"
-                    className="text-red-500 text-sm"
-                  />
-                </div>
-
-                <div className="flex flex-col">
-                  <label htmlFor="age" className="text-gray-700">
-                    Age
-                  </label>
-                  <Field
-                    name="age"
-                    type="number"
-                    className="mt-1 p-2 border rounded-md"
-                  />
-                  <ErrorMessage
-                    name="age"
-                    component="div"
-                    className="text-red-500 text-sm"
-                  />
-                </div>
-
-                <div className="flex flex-col">
-                  <label htmlFor="bloodGroup" className="text-gray-700">
-                    bloodGroup
-                  </label>
-                  <Field
-                    name="bloodGroup"
-                    as="select"
-                    className="mt-1 p-2 border rounded-md"
-                  >
-                    <option value="">Select Blood Group</option>
-                    <option value="A+">A+</option>
-                    <option value="A-">A-</option>
-                    <option value="B+">B+</option>
-                    <option value="B-">B-</option>
-                    <option value="AB+">AB+</option>
-                    <option value="AB-">AB-</option>
-                    <option value="O+">O+</option>
-                    <option value="O-">O-</option>
-                  </Field>
-                  <ErrorMessage
-                    name="bloodGroup"
-                    component="div"
-                    className="text-red-500 text-sm"
-                  />
-                </div>
-
-                <div className="flex flex-col">
-                  <label htmlFor="address" className="text-gray-700">
-                    Address
-                  </label>
-                  <Field
-                    name="address"
-                    type="text"
-                    className="mt-1 p-2 border rounded-md"
-                  />
-                  <ErrorMessage
-                    name="address"
-                    component="div"
-                    className="text-red-500 text-sm"
-                  />
-                </div>
-
-                <div className="flex flex-col">
-                  <label htmlFor="medicalHistory" className="text-gray-700">
-                    Medical History
-                  </label>
-                  <Field
-                    name="medicalHistory"
-                    as="textarea"
-                    className="mt-1 p-2 border rounded-md"
-                  />
-                  <ErrorMessage
-                    name="medicalHistory"
-                    component="div"
-                    className="text-red-500 text-sm"
-                  />
-                </div>
-
-                <button
-                  type="submit"
-                  disabled={isSubmitting}
-                  className="bg-blue-500 text-white p-2 rounded-md shadow-md hover:bg-blue-600 transition-colors"
-                >
-                  Submit
-                </button>
-              </Form>
-            )}
-          </Formik>
+            Edit
+          </button>
         </div>
+        <div className="bg-gray-100 min-h-screen px-6 py-8">
+          <div className="max-w-4xl mx-auto bg-white rounded-xl shadow-lg overflow-hidden transition duration-300 ease-in-out transform hover:shadow-xl">
+            <div className="px-8 py-6">
+              <div className="flex flex-col md:flex-row items-center">
+                <img
+                  src={profile || "/placeholder.jpg"}
+                  alt="Profile"
+                  className="rounded-full h-40 w-40 object-cover shadow-lg border-4 border-white"
+                />
+                <div className="mt-6 md:mt-0 md:ml-8 text-center md:text-left">
+                  <h2 className="text-4xl font-bold text-gray-800 mb-2">
+                    {data.name}
+                  </h2>
+                  <p className="text-gray-600 text-xl mb-1">
+                    {data.email}
+                  </p>
+                  <p className="text-gray-600">{data.contact}</p>
+                </div>
+              </div>
+
+              <div className="mt-10">
+                <h3 className="text-2xl font-semibold text-gray-800 mb-4 pb-2 border-b-2 border-gray-200">
+                  Personal Information
+                </h3>
+                <div className="mt-4 space-y-3">
+                  <p className="text-gray-600 flex items-center">
+                    <span className="font-semibold w-20">Gender:</span>
+                    <span className="ml-6">{data.gender}</span>
+                  </p>
+                  <p className="text-gray-600 flex items-center">
+                    <span className="font-semibold w-20">DOB:</span>
+                    <span className="ml-6">
+                      {new Date(data.dateofbirth).toLocaleDateString()}
+                    </span>
+                  </p>
+                  <p className="text-gray-600 flex items-center">
+                    <span className="font-semibold w-20">Age:</span>
+                    <span className="ml-6">{data.age}</span>
+                  </p>
+                  <p className="text-gray-600 flex items-center">
+                    <span className="font-semibold w-20">BloodGroup:</span>
+                    <span className="ml-6">{data.bloodgroup}</span>
+                  </p>
+                  <p className="text-gray-600 flex items-center">
+                    <span className="font-semibold w-20">Medical History:</span>
+                    <span className="ml-6">{data.medicalHistory}</span>
+                  </p>
+                </div>
+              </div>
+
+              <div className="mt-10">
+                  <h3 className="text-2xl font-semibold text-gray-800 mb-4 pb-2 border-b-2 border-gray-200">
+                    Contact Information
+                  </h3>
+                  <div className="mt-4 space-y-3">
+                    <p className="text-gray-600 flex items-center">
+                      <span className="font-semibold w-20">Phone:</span>
+                      <span className="ml-2">{data.contact}</span>
+                    </p>
+                    <p className="text-gray-600 flex items-center">
+                      <span className="font-semibold w-20">Address:</span>
+                      <span className="ml-2">{data.address}</span>
+                    </p>
+                  </div>
+                
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <ToastContainer />
       </PatientDashboardlayout>
     </div>
   );

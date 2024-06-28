@@ -29,7 +29,9 @@ const AdminLogin = () => {
     if (status === 200) {
       toast.success(message);
       localStorage.setItem("Token",res.data.token)   
-      localStorage.setItem("Email",JSON.stringify(res.data.admin.email))   
+      console.log(res.data)
+      localStorage.setItem("User_Id",res.data.admin._id)
+      localStorage.setItem("Role",res.data.admin.role)
       console.log(res.data)
         setTimeout(() => {
           navigate("/AdminDashboard");

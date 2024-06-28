@@ -7,18 +7,7 @@ import "react-toastify/dist/ReactToastify.css";
 
 const DOC_Settings = () => {
   const id = localStorage.getItem("User_Id");
-  const [data, setData] = useState({
-    name: "",
-    department: "",
-    email: "",
-    gender: "",
-    dateofbirth: "",
-    age: "",
-    consultingfee: "",
-    availability: [],
-    contact: "",
-    address: "",
-  });
+  const [data, setData] = useState([])
 
   const fetchData = async () => {
     try {

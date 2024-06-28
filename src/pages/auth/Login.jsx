@@ -37,12 +37,14 @@ const Login = () => {
       if (res.data.user.role === "Doctor") {
           localStorage.setItem("Token",res.data.token)
           localStorage.setItem("User_Id",res.data.user._id)
+          localStorage.setItem("Role",res.data.user.role)
         setTimeout(() => {
           navigate("/DoctorDashBoard");
         }, 2000);
       } else if (res.data.user.role === "Patient") {
         localStorage.setItem("Token",res.data.token)
-          localStorage.setItem("Email",JSON.stringify(res.data.user.email))
+        localStorage.setItem("User_Id",res.data.user._id)
+          localStorage.setItem("Role",res.data.user.role)
         setTimeout(() => {
           navigate("/PatientDashBoard");
         }, 2000);

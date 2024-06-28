@@ -1,8 +1,27 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import PatientDashboardlayout from "../../layouts/PatientDashboardlayout";
+import axios from "axios";
 
 const PatientDashboard = () => {
-  const details = {name:"John Doe"}
+  // const details = {name:"John Doe"}
+  const [data, setData] = useState([]);
+    
+  
+  const fetchData = async() => {
+    try {
+      const id = localStorage.getItem("User_Id")
+      const res = await axios.post("http://localhost:3000/api/getdetails", {
+        id: id,
+      });
+      setData(res.data.details);
+    } catch (e) {
+      console.error("Error fetching doctor details:", e);
+    }
+  }
+
+useEffect(() => {
+  fetchData()
+},[])
 
   return (
     <div className="bg-slate-800">
@@ -12,7 +31,7 @@ const PatientDashboard = () => {
         </div>
 
         <div className="py-6 px-8 bg-cyan-900 text-yellow-200 text-3xl font-semibold rounded-md shadow-lg flex items-center justify-center my-4">
-          Welcome to HMS {details.name}
+          Welcome to HMS {data.name}
         </div>
       </PatientDashboardlayout>
     </div>

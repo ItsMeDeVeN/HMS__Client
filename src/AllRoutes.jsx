@@ -39,17 +39,17 @@ const AllRoutes = () => {
 
           <Route path="/auth/login" element={<AdminLogin />}></Route>
 
-          {/* <Route element={<ProtectedRoutes/>}>   */}
+          <Route element={<ProtectedRoutes isAdmin={true}/>}>  
             <Route path="/AdminDashboard" element={<AdminDashboard />}></Route>
             <Route path="/AdminDashBoard/Patient_List" element={<ManagePatient />}></Route>
             <Route path="/AdminDashboard/DOC_List" element={<ManageDoctor />}></Route>
             <Route path="/AdminDashboard/Settings" element={<AdminSettings />}></Route>
             <Route path="/AdminDashboard/DOC_List/EditDOCDetails" element={<EditDOCDetails />}></Route>
-            {/* </Route> */}
+            </Route>
 
           <Route path="/signup/Doctor" element={<DoctorOnBoard />}></Route>
           {/* <Route element={<ProtectedRoute allowedRoles="Doctor"/>}> */}
-          <Route element={<ProtectedRoutes/>}>  
+          <Route element={<ProtectedRoutes isAdmin={false}/>}>  
             <Route path="/DoctorDashBoard" element={<DoctorDashBoard />}></Route>
             <Route path="/DoctorDashBoard/Appointments" element={<DOC_Appointments />}></Route>
             <Route path="/DoctorDashBoard/Services" element={<DOC_DOCList />}></Route>
@@ -57,12 +57,12 @@ const AllRoutes = () => {
           </Route>
 
           <Route path="/signup/Patient" element={<PatientOnBoard />}></Route>
-          {/* <Route element={<ProtectedRoute allowedRoles="Patient"/>}> */}
+          <Route element={<ProtectedRoutes isAdmin={false}/>}>
           <Route path="/PatientDashBoard" element={<PatientDashboard />}></Route>
           <Route path="/PatientDashBoard/Appointments" element={<Patient_Appointments />}></Route>
           <Route path="/PatientDashBoard/Patient_DOCList" element={<Patient_DOCList />}></Route>
           <Route path="/PatientDashBoard/Settings" element={<Patient_Settings />}></Route>
-          {/* </Route> */}
+          </Route>
         </Routes>
       </BrowserRouter>
     </div>
