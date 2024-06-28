@@ -28,6 +28,9 @@ const AdminLogin = () => {
   const handleResponse = (status, message, res) => {
     if (status === 200) {
       toast.success(message);
+      localStorage.setItem("Token",res.data.token)   
+      localStorage.setItem("Email",JSON.stringify(res.data.admin.email))   
+      console.log(res.data)
         setTimeout(() => {
           navigate("/AdminDashboard");
         }, 2000);

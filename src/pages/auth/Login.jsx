@@ -33,11 +33,16 @@ const Login = () => {
   const handleResponse = (status, message, res) => {
     if (status === 200) {
       toast.success(message);
-      if (res.data.role === "Doctor") {
+      console.log(res.data)
+      if (res.data.user.role === "Doctor") {
+          localStorage.setItem("Token",res.data.token)
+          localStorage.setItem("User_Id",res.data.user._id)
         setTimeout(() => {
           navigate("/DoctorDashBoard");
         }, 2000);
-      } else if (res.data.role === "Patient") {
+      } else if (res.data.user.role === "Patient") {
+        localStorage.setItem("Token",res.data.token)
+          localStorage.setItem("Email",JSON.stringify(res.data.user.email))
         setTimeout(() => {
           navigate("/PatientDashBoard");
         }, 2000);

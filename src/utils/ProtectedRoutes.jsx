@@ -1,20 +1,8 @@
-// import React from 'react';
-// import { useSelector } from 'react-redux';
-// import { Navigate, Outlet } from 'react-router-dom';
+import { Outlet, Navigate } from "react-router-dom";
 
-// const ProtectedRoute = ({ allowedRoles }) => {
-//     const { token, role } = useSelector(state => state.auth);
-//     const isAuthenticated = !!token;
+const ProtectedRoutes = () => {
+    const user = localStorage.getItem("Token")
+    return user ? <Outlet/> : <Navigate to="/login"/>
+}
 
-//     if (!isAuthenticated) {
-//         return <Navigate to="/login" />;
-//     }
-
-//     if (!allowedRoles.includes(role)) {
-//         return <Navigate to="/" />; // Or some unauthorized page
-//     }
-
-//     return <Outlet />;
-// };
-
-// export default ProtectedRoute;
+export default ProtectedRoutes

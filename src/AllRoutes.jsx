@@ -25,6 +25,7 @@ import ManageDoctor from "./admin/pages/UserManagement/DoctorManagement/ManageDo
 import ManagePatient from "./admin/pages/UserManagement/PatientManagement/ManagePatient";
 import AdminLogin from "./admin/pages/auth/AdminLogin";
 import EditDOCDetails from "./admin/pages/UserManagement/DoctorManagement/EditDOCDetails";
+import ProtectedRoutes from "./utils/ProtectedRoutes";
 const AllRoutes = () => {
   return (
     <div className="AllRoutes">
@@ -37,21 +38,23 @@ const AllRoutes = () => {
           <Route path="*" element={<NotFound />}></Route>
 
           <Route path="/auth/login" element={<AdminLogin />}></Route>
-          {/* <Route element={<ProtectedRoute allowedRoles="Admin"/>}> */}
-          <Route path="/AdminDashboard" element={<AdminDashboard />}></Route>
-          <Route path="/AdminDashBoard/Patient_List" element={<ManagePatient />}></Route>
-          <Route path="/AdminDashboard/DOC_List" element={<ManageDoctor />}></Route>
-          <Route path="/AdminDashboard/Settings" element={<AdminSettings />}></Route>
-          <Route path="/AdminDashboard/DOC_List/EditDOCDetails" element={<EditDOCDetails />}></Route>
-          {/* </Route> */}
+
+          {/* <Route element={<ProtectedRoutes/>}>   */}
+            <Route path="/AdminDashboard" element={<AdminDashboard />}></Route>
+            <Route path="/AdminDashBoard/Patient_List" element={<ManagePatient />}></Route>
+            <Route path="/AdminDashboard/DOC_List" element={<ManageDoctor />}></Route>
+            <Route path="/AdminDashboard/Settings" element={<AdminSettings />}></Route>
+            <Route path="/AdminDashboard/DOC_List/EditDOCDetails" element={<EditDOCDetails />}></Route>
+            {/* </Route> */}
 
           <Route path="/signup/Doctor" element={<DoctorOnBoard />}></Route>
           {/* <Route element={<ProtectedRoute allowedRoles="Doctor"/>}> */}
-          <Route path="/DoctorDashBoard" element={<DoctorDashBoard />}></Route>
-          <Route path="/DoctorDashBoard/Appointments" element={<DOC_Appointments />}></Route>
-          <Route path="/DoctorDashBoard/Services" element={<DOC_DOCList />}></Route>
-          <Route path="/DoctorDashBoard/Settings" element={<DOC_Settings />}></Route>
-          {/* </Route> */}
+          <Route element={<ProtectedRoutes/>}>  
+            <Route path="/DoctorDashBoard" element={<DoctorDashBoard />}></Route>
+            <Route path="/DoctorDashBoard/Appointments" element={<DOC_Appointments />}></Route>
+            <Route path="/DoctorDashBoard/Services" element={<DOC_DOCList />}></Route>
+            <Route path="/DoctorDashBoard/Settings" element={<DOC_Settings />}></Route>
+          </Route>
 
           <Route path="/signup/Patient" element={<PatientOnBoard />}></Route>
           {/* <Route element={<ProtectedRoute allowedRoles="Patient"/>}> */}

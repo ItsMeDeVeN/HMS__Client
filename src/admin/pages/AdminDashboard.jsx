@@ -1,6 +1,7 @@
 import React from "react";
 import AdminDashboardlayout from "../layout/AdminDashboardlayout"
 
+
 const details = "Admin  :)";
 
 const AdminDashboard = () => {
@@ -14,6 +15,7 @@ const AdminDashboard = () => {
         <div className="py-6 px-8 bg-cyan-900 text-yellow-200 text-3xl font-semibold rounded-md shadow-lg flex items-center justify-center my-4">
           Welcome to HMS {details}
         </div>
+        
         </AdminDashboardlayout>
         
     </div>

@@ -93,8 +93,8 @@ const DoctorOnBoard = () => {
     age: Yup.number().required("Age is Required!!!"),
     consultingfee: Yup.number().required("Consulting Fee is Required!!!"),
     address: Yup.string().required("Address is Required!!!"),
-    day: Yup.string().required("Day is required"),
-    timeSlot: Yup.string().required("Time Slot is required"),
+    day: Yup.string(),
+    timeSlot: Yup.string(),
     // educationalQualification: Yup.mixed().required(
     //   "Educational Qualification is Required"
     // ),
@@ -109,7 +109,7 @@ const DoctorOnBoard = () => {
   const addAvailability = (values, setFieldValue) => {
     const newAvailability = [
       ...availability,
-      { day: values.day, timeSlot: values.timeSlot },
+      { day: values.day, timeSlot: values.timeSlot.toUpperCase() },
     ];
     setAvailability(newAvailability);
     setFieldValue("day", "");
