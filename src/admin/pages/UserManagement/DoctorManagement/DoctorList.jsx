@@ -123,6 +123,7 @@ const DoctorList = ({
                     </h3>
                   </div>
                 </div>
+                
                 {selectedDoctor.availability.map((slot, index) => (
                   <div key={index} className="flex items-start mt-2">
                     <div className="w-1/3">

@@ -4,7 +4,7 @@ import Navbar from "../components/Navbar";
 import { ToastContainer } from "react-toastify";
 const DOCDashboardlayout = ({ children }) => {
   return (
-    <div className="flex h-fit bg-slate-300">
+    <div className="flex h-screen bg-slate-300">
       <ToastContainer />
       <Sidebar role='Doctor'/>
       
