@@ -63,7 +63,7 @@ const ManageDoctor = () => {
         id,
       });
       if (res.status === 200) {
-        toast.success(res.data.message, { onClose: fetchData });
+        fetchData();
       }
     } catch (e) {
       console.error("Error verifying doctor:", e);
@@ -77,7 +77,7 @@ const ManageDoctor = () => {
         data: { id },
       });
       if (res.status === 200) {
-        toast.success(res.data.message, { onClose: fetchData });
+        fetchData();
       }
     } catch (e) {
       console.error("Error deleting doctor:", e);

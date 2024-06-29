@@ -6,6 +6,7 @@ import { useDebounce } from "use-debounce";
 import AdminDashboardlayout from "../../../layout/AdminDashboardlayout";
 import { toast, ToastContainer } from "react-toastify";
 import EditPatientDetails from "./EditPatientDetails";
+
 const ManagePatient = () => {
   const [data, setData] = useState([]);
   const [selectedPatientId, setSelectedPatientId] = useState(null);
@@ -28,7 +29,7 @@ const ManagePatient = () => {
         setData(res.data.patients);
         // console.log(res.data)
         settotalPages(res.data.totalPages);
-        console.log(res.data.patients.length);
+        // console.log("Total Patients ==>",res.data.patients.length);    
       }
     } catch (e) {
       console.error("Error fetching data:", e);
@@ -63,12 +64,7 @@ const ManagePatient = () => {
         data: { id },
       });
       if (res.status === 200) {
-        toast.success(res.data.message, {
-          onClose: () => {
-            console.log("Toast closed, fetching data...");
-            fetchData();
-          },
-        });
+        fetchData();
       }
     } catch (e) {
       console.error("Error deleting patient:", e);

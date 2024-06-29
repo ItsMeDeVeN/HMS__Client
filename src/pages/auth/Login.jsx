@@ -39,14 +39,14 @@ const Login = () => {
           localStorage.setItem("User_Id",res.data.user._id)
           localStorage.setItem("Role",res.data.user.role)
         setTimeout(() => {
-          navigate("/DoctorDashBoard");
+          navigate("/Doctor/DashBoard");
         }, 2000);
       } else if (res.data.user.role === "Patient") {
         localStorage.setItem("Token",res.data.token)
         localStorage.setItem("User_Id",res.data.user._id)
           localStorage.setItem("Role",res.data.user.role)
         setTimeout(() => {
-          navigate("/PatientDashBoard");
+          navigate("/Patient/DashBoard");
         }, 2000);
       }
     } else if (status === 400 || status === 403 || status === 401) {

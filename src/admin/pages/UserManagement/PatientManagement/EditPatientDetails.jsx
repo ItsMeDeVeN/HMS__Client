@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import { Formik, Field, Form, ErrorMessage, FieldArray } from "formik";
+import { Formik, Field, Form, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -16,6 +16,7 @@ const EditPatientDetails = ({ patientId, onClose, onUpdate }) => {
     age: "",
     address: "",
     medicalHistory: "",
+    activation_status: true, // Added activation_status to initial state
   });
 
   useEffect(() => {
@@ -26,7 +27,7 @@ const EditPatientDetails = ({ patientId, onClose, onUpdate }) => {
         });
         setFormData(res.data.details);
       } catch (e) {
-        console.error("Error fetching doctor details:", e);
+        console.error("Error fetching patient details:", e);
       }
     };
     fetchPatientDetails();
@@ -42,18 +43,13 @@ const EditPatientDetails = ({ patientId, onClose, onUpdate }) => {
     age: formData.age,
     address: formData.address,
     medicalHistory: formData.medicalHistory,
+    activation_status: formData.activation_status, // Added activation_status to initialValues
   };
 
   const validationSchema = Yup.object({
     name: Yup.string()
       .max(50, "Must be 50 characters or less")
       .required("Full Name is Required!!!"),
-    email: Yup.string()
-      .matches(
-        /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
-        "Invalid Email Format"
-      )
-      .required("Email is Required!!!"),
     contact: Yup.string()
       .matches(/^[0-9]+$/, "Must be only digits")
       .min(10, "Must be exactly 10 digits")
@@ -65,6 +61,7 @@ const EditPatientDetails = ({ patientId, onClose, onUpdate }) => {
     age: Yup.number().required("Age is required"),
     address: Yup.string().required("Address is required"),
     medicalHistory: Yup.string(),
+    activation_status: Yup.boolean().required("Activation status is required"), // Added validation for activation_status
   });
 
   const handleSubmit = async (values, { setSubmitting }) => {
@@ -82,11 +79,12 @@ const EditPatientDetails = ({ patientId, onClose, onUpdate }) => {
         });
       }
     } catch (e) {
-      console.error("Error updating doctor details:", e);
+      console.error("Error updating patient details:", e);
     } finally {
       setSubmitting(false);
     }
   };
+
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50 z-50 overflow-y-auto">
       <div className="bg-white p-6 rounded shadow-md w-full max-w-lg overflow-y-auto max-h-full">
@@ -119,25 +117,7 @@ const EditPatientDetails = ({ patientId, onClose, onUpdate }) => {
                   className="text-red-500 text-sm"
                 />
               </div>
-              <div className="flex flex-col mb-4">
-                <label
-                  htmlFor="email"
-                  className="font-semibold text-gray-700"
-                  style={{ textShadow: "1px 1px 1px rgba(0, 0, 0, 0.1)" }}
-                >
-                  Email
-                </label>
-                <Field
-                  type="email"
-                  name="email"
-                  className="border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400 transition-shadow"
-                />
-                <ErrorMessage
-                  name="email"
-                  component="div"
-                  className="text-red-500 text-sm"
-                />
-              </div>
+
               <div className="flex flex-col mb-4">
                 <label
                   htmlFor="contact"
@@ -157,6 +137,7 @@ const EditPatientDetails = ({ patientId, onClose, onUpdate }) => {
                   className="text-red-500 text-sm"
                 />
               </div>
+
               <div className="flex flex-col mb-4">
                 <label
                   htmlFor="gender"
@@ -181,6 +162,7 @@ const EditPatientDetails = ({ patientId, onClose, onUpdate }) => {
                   className="text-red-500 text-sm"
                 />
               </div>
+
               <div className="flex flex-col mb-4">
                 <label
                   htmlFor="dateofbirth"
@@ -200,6 +182,7 @@ const EditPatientDetails = ({ patientId, onClose, onUpdate }) => {
                   className="text-red-500 text-sm"
                 />
               </div>
+
               <div className="flex flex-col mb-4">
                 <label
                   htmlFor="bloodgroup"
@@ -231,6 +214,7 @@ const EditPatientDetails = ({ patientId, onClose, onUpdate }) => {
                   className="text-red-500 text-sm"
                 />
               </div>
+
               <div className="flex flex-col mb-4">
                 <label
                   htmlFor="age"
@@ -242,7 +226,7 @@ const EditPatientDetails = ({ patientId, onClose, onUpdate }) => {
                 <Field
                   type="number"
                   name="age"
-                  className="border border-gray-300                   rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400 transition-shadow"
+                  className="border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400 transition-shadow"
                 />
                 <ErrorMessage
                   name="age"
@@ -250,6 +234,7 @@ const EditPatientDetails = ({ patientId, onClose, onUpdate }) => {
                   className="text-red-500 text-sm"
                 />
               </div>
+
               <div className="flex flex-col mb-4">
                 <label
                   htmlFor="address"
@@ -270,13 +255,14 @@ const EditPatientDetails = ({ patientId, onClose, onUpdate }) => {
                   className="text-red-500 text-sm"
                 />
               </div>
+
               <div className="flex flex-col mb-4">
                 <label
                   htmlFor="medicalHistory"
                   className="font-semibold text-gray-700"
                   style={{ textShadow: "1px 1px 1px rgba(0, 0, 0, 0.1)" }}
                 >
-                  MedicalHistory
+                  Medical History
                 </label>
                 <Field
                   as="textarea"
@@ -286,6 +272,46 @@ const EditPatientDetails = ({ patientId, onClose, onUpdate }) => {
                 />
                 <ErrorMessage
                   name="medicalHistory"
+                  component="div"
+                  className="text-red-500 text-sm"
+                />
+              </div>
+
+              {/* Activation Status */}
+              <div className="flex flex-col mb-4">
+                <label
+                  htmlFor="activation_status"
+                  className="font-semibold text-gray-700"
+                  style={{ textShadow: "1px 1px 1px rgba(0, 0, 0, 0.1)" }}
+                >
+                  Activation Status
+                </label>
+                <div className="flex items-center">
+                  <label className="mr-4">
+                    <Field
+                      type="radio"
+                      name="activation_status"
+                      value="true"
+                      checked={values.activation_status === true}
+                      onChange={() => setFieldValue("activation_status", true)}
+                      className="mr-1"
+                    />
+                    Active
+                  </label>
+                  <label>
+                    <Field
+                      type="radio"
+                      name="activation_status"
+                      value="false"
+                      checked={values.activation_status === false}
+                      onChange={() => setFieldValue("activation_status", false)}
+                      className="mr-1"
+                    />
+                    Inactive
+                  </label>
+                </div>
+                <ErrorMessage
+                  name="activation_status"
                   component="div"
                   className="text-red-500 text-sm"
                 />

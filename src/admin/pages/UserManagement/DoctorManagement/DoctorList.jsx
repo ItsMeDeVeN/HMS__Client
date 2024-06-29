@@ -1,7 +1,9 @@
 import React, { useState } from "react";
 import { RiDeleteBinLine } from "react-icons/ri";
+import { FaSearch } from "react-icons/fa";
 import { FaEdit } from "react-icons/fa";
 import { toast, ToastContainer } from "react-toastify";
+import Swal from "sweetalert2";
 import "react-toastify/dist/ReactToastify.css"; // Ensure you import the CSS for react-toastify
 
 const DoctorList = ({
@@ -18,9 +20,9 @@ const DoctorList = ({
 
   return (
     <div className="flex justify-center bg-gray-200 max-w-full mx-3">
-      <div className="bg-white pl-6 pr-10 py-10 rounded-lg mt-10 shadow-xl w-full">
+      <div className="bg-white rounded-lg mt-10 shadow-xl w-full">
         {selectedDoctor ? (
-          <div className="">
+          <div className=" pl-6 pr-10 py-10">
             <button
               onClick={() => {
                 setSelectedDoctor(null);
@@ -123,7 +125,7 @@ const DoctorList = ({
                     </h3>
                   </div>
                 </div>
-                
+
                 {selectedDoctor.availability.map((slot, index) => (
                   <div key={index} className="flex items-start mt-2">
                     <div className="w-1/3">
@@ -165,20 +167,30 @@ const DoctorList = ({
                   </p>
                 </div>
               </div>
+              <div className="flex items-start">
+                <div className="w-1/3">
+                  <h2 className="text-xl font-semibold text-gray-700">
+                    Activation Status:
+                  </h2>
+                </div>
+                <div className="w-2/3">
+                  <p
+                    className={`text-gray-600 ${
+                      selectedDoctor.activation_status
+                        ? "text-green-500"
+                        : "text-red-500"
+                    }`}
+                  >
+                    {selectedDoctor.activation_status ? "Active" : "Inactive"}
+                  </p>
+                </div>
+              </div>
             </div>
           </div>
         ) : (
-          <div className="flex justify-center bg-gray-200 max-w-full mx-3">
+          <div className="flex justify-center bg-gray-200 max-w-full">
             <div className="bg-white pl-6 pr-10 py-10 rounded-lg shadow-xl w-full">
               <div className="mb-6 flex justify-between items-center">
-                <input
-                  type="text"
-                  placeholder="Search doctors..."
-                  className="w-96 bg-gray-100 p-2 border border-gray-300 rounded"
-                  onChange={(e) => {
-                    onSearch(e.target.value);
-                  }}
-                />
                 <button
                   onClick={() => {
                     window.open(
@@ -191,10 +203,21 @@ const DoctorList = ({
                 >
                   + Create
                 </button>
+                <div className="relative w-96">
+                  <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+                    <FaSearch className="text-gray-500" />
+                  </div>
+                  <input
+                    type="text"
+                    placeholder="Search Doctors... "
+                    className="w-full bg-gray-100 p-2 pl-10 border border-gray-300 rounded"
+                    onChange={(e) => {
+                      onSearch(e.target.value);
+                    }}
+                  />
+                </div>
               </div>
-              <h1 className="text-3xl font-bold mb-6 text-center text-gray-800">
-                Doctors
-              </h1>
+            
               <table className="min-w-full bg-white border-collapse">
                 <thead>
                   <tr className="text-xl">
@@ -209,12 +232,10 @@ const DoctorList = ({
                   {data && Array.isArray(data) && data.length > 0 ? (
                     data.map((user) => (
                       <tr key={user._id} className="hover:bg-gray-100">
-                        <td className="py-2 px-4 border-b">{user.name}</td>
+                        <td className="py-2 px-4 border-b font-semibold cursor-pointer" onClick={() => {setSelectedDoctor(user)}}>{user.name}</td>
                         <td className="py-2 px-4 border-b">{user.email}</td>
                         <td className="py-2 px-4 border-b">{user.contact}</td>
-                        <td className="py-2 px-4 border-b">
-                          {user.department}
-                        </td>
+                        <td className="py-2 px-4 border-b">{user.department}</td>
                         <td className="py-2 px-4 border-b flex space-x-2">
                           <button
                             onClick={() => {
@@ -229,10 +250,20 @@ const DoctorList = ({
                               const confirmationMessage = user.verified
                                 ? "Are you sure you want to unverify this user?"
                                 : "Are you sure you want to verify this user?";
-
-                              if (window.confirm(confirmationMessage)) {
-                                onVerify(user._id);
-                              }
+                              Swal.fire({
+                                title: confirmationMessage,
+                                showCancelButton: true,
+                                confirmButtonText: "Yes",
+                              }).then((result) => {
+                                if (result.isConfirmed) {
+                                  Swal.fire(
+                                    "Changed Succesfully",
+                                    "",
+                                    "success"
+                                  );
+                                  onVerify(user._id);
+                                }
+                              });
                             }}
                             className={`py-1 px-3 rounded ${
                               user.verified
@@ -250,13 +281,21 @@ const DoctorList = ({
                           </button>
                           <button
                             onClick={() => {
-                              if (
-                                window.confirm(
-                                  "Are you sure you want to delete this doctor?"
-                                )
-                              ) {
-                                onDelete(user._id);
-                              }
+                              Swal.fire({
+                                title:
+                                  "Are you sure you want to delete the Doctor?",
+                                showCancelButton: true,
+                                confirmButtonText: "Yes",
+                              }).then((result) => {
+                                if (result.isConfirmed) {
+                                  Swal.fire(
+                                    "Deleted Succesfully",
+                                    "",
+                                    "success"
+                                  );
+                                  onDelete(user._id);
+                                }
+                              });
                             }}
                             className="bg-red-500 text-white py-1 px-3 rounded hover:bg-red-700 transition"
                           >
@@ -278,7 +317,7 @@ const DoctorList = ({
                 </tbody>
               </table>
 
-              <div className="flex justify-center mt-4">
+              <div className="flex justify-end mt-6 mr-5">
                 <button
                   onClick={() => onPageChange(currentPage - 1)}
                   className={`px-3 py-1 mx-1 border rounded ${

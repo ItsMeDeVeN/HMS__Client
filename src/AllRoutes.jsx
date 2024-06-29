@@ -44,21 +44,21 @@ const AllRoutes = () => {
           <Route path="/auth/login" element={<AdminLogin />}></Route>
 
           <Route element={<AdminProtectedRoutes allowedRole={"Admin"} />}>
-            <Route path="/AdminDashboard" element={<AdminDashboard />}></Route>
+            <Route path="/Admin/Dashboard" element={<AdminDashboard />}></Route>
             <Route
-              path="/AdminDashBoard/Patient_List"
+              path="/Admin/Patient_List"
               element={<ManagePatient />}
             ></Route>
             <Route
-              path="/AdminDashboard/DOC_List"
+              path="/Admin/DOC_List"
               element={<ManageDoctor />}
             ></Route>
             <Route
-              path="/AdminDashboard/Settings"
+              path="/Admin/Settings"
               element={<AdminSettings />}
             ></Route>
             <Route
-              path="/AdminDashboard/DOC_List/EditDOCDetails"
+              path="/Admin/DOC_List/EditDOCDetails"
               element={<EditDOCDetails />}
             ></Route>
           </Route>
@@ -66,19 +66,19 @@ const AllRoutes = () => {
           <Route path="/signup/Doctor" element={<DoctorOnBoard />}></Route>
           <Route element={<ProtectedRoutes allowedRole={"Doctor"} />}>
             <Route
-              path="/DoctorDashBoard"
+              path="/Doctor/DashBoard"
               element={<DoctorDashBoard />}
             ></Route>
             <Route
-              path="/DoctorDashBoard/Appointments"
+              path="/Doctor/Appointments"
               element={<DOC_Appointments />}
             ></Route>
             <Route
-              path="/DoctorDashBoard/Services"
+              path="/Doctor/Doctors"
               element={<Managedoctors />}
             ></Route>
             <Route
-              path="/DoctorDashBoard/Settings"
+              path="/Doctor/Settings"
               element={<DOC_Settings />}
             ></Route>
           </Route>
@@ -86,19 +86,19 @@ const AllRoutes = () => {
           <Route path="/signup/Patient" element={<PatientOnBoard />}></Route>
           <Route element={<ProtectedRoutes allowedRole={"Patient"} />}>
             <Route
-              path="/PatientDashBoard"
+              path="/Patient/DashBoard"
               element={<PatientDashboard />}
             ></Route>
             <Route
-              path="/PatientDashBoard/Appointments"
+              path="/Patient/Appointments"
               element={<Patient_Appointments />}
             ></Route>
             <Route
-              path="/PatientDashBoard/Patient_DOCList"
+              path="/Patient/Patientdoclist"
               element={<Managedoclist />}
             ></Route>
             <Route
-              path="/PatientDashBoard/Settings"
+              path="/Patient/Settings"
               element={<Patient_Settings />}
             ></Route>
           </Route>

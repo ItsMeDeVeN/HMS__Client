@@ -17,6 +17,7 @@ const EditDOCDetails = ({ doctorId, onClose, onUpdate }) => {
     department: "",
     availability: [],
     consultingfee: "",
+    activation_status: false,
   });
 
   useEffect(() => {
@@ -44,28 +45,24 @@ const EditDOCDetails = ({ doctorId, onClose, onUpdate }) => {
     department: formData.department,
     consultingfee: formData.consultingfee,
     availability: formData.availability,
+    activation_status: formData.activation_status,
   };
 
   const validationSchema = Yup.object({
     name: Yup.string()
       .max(50, "Must be 50 characters or less")
-      .required("Full Name is Required!!!"),
-    email: Yup.string()
-      .matches(
-        /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
-        "Invalid Email Format"
-      )
-      .required("Email is Required!!!"),
+      .required("Full Name is required"),
     contact: Yup.string()
       .matches(/^[0-9]+$/, "Must be only digits")
       .min(10, "Must be exactly 10 digits")
       .max(10, "Must be exactly 10 digits")
-      .required("Contact Details is Required!!!"),
+      .required("Contact Details is required"),
     address: Yup.string().required("Address is required"),
     gender: Yup.string().required("Gender is required"),
     dateofbirth: Yup.date().required("Date of Birth is required"),
     age: Yup.number().required("Age is required"),
     department: Yup.string().required("Department is required"),
+    activation_status: Yup.boolean().required("Activation Status is required"),
     consultingfee: Yup.number().required("Consulting Fee is required"),
     availability: Yup.array().of(
       Yup.object().shape({
@@ -77,6 +74,7 @@ const EditDOCDetails = ({ doctorId, onClose, onUpdate }) => {
 
   const handleSubmit = async (values, { setSubmitting }) => {
     try {
+      console.log(values);
       const res = await axios.post("http://localhost:3000/api/updateDoctor", {
         ...values,
         _id: doctorId,
@@ -137,25 +135,7 @@ const EditDOCDetails = ({ doctorId, onClose, onUpdate }) => {
                   className="text-red-500 text-sm"
                 />
               </div>
-              <div className="flex flex-col mb-4">
-                <label
-                  htmlFor="email"
-                  className="font-semibold text-gray-700"
-                  style={{ textShadow: "1px 1px 1px rgba(0, 0, 0, 0.1)" }}
-                >
-                  Email
-                </label>
-                <Field
-                  type="email"
-                  name="email"
-                  className="border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400 transition-shadow"
-                />
-                <ErrorMessage
-                  name="email"
-                  component="div"
-                  className="text-red-500 text-sm"
-                />
-              </div>
+
               <div className="flex flex-col mb-4">
                 <label
                   htmlFor="contact"
@@ -308,6 +288,37 @@ const EditDOCDetails = ({ doctorId, onClose, onUpdate }) => {
                 />
               </div>
 
+              {/* Activation Status */}
+              <div className="flex items-center mb-4">
+                <label className="mr-4 flex items-center">
+                  <Field
+                    type="radio"
+                    name="activation_status"
+                    value={true}
+                    checked={values.activation_status === true}
+                    onChange={() => setFieldValue("activation_status", true)}
+                    className="mr-1"
+                  />
+                  Active
+                </label>
+                <label className="flex items-center">
+                  <Field
+                    type="radio"
+                    name="activation_status"
+                    value={false}
+                    checked={values.activation_status === false}
+                    onChange={() => setFieldValue("activation_status", false)}
+                    className="mr-1"
+                  />
+                  Inactive
+                </label>
+              </div>
+              <ErrorMessage
+                name="activation_status"
+                component="div"
+                className="text-red-500 text-sm"
+              />
+
               {/* Availability Section */}
               <div className="flex flex-col mb-4">
                 <label
@@ -371,7 +382,6 @@ const EditDOCDetails = ({ doctorId, onClose, onUpdate }) => {
                   ))}
                 </div>
               </div>
-
               {/* Buttons */}
               <div className="flex justify-end">
                 <button

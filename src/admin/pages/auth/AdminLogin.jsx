@@ -34,7 +34,7 @@ const AdminLogin = () => {
       localStorage.setItem("Role",res.data.admin.role)
       console.log(res.data)
         setTimeout(() => {
-          navigate("/AdminDashboard");
+          navigate("/Admin/Dashboard");
         }, 2000);
     } else if (status === 400 || status === 403 || status === 401) {
       toast.error(message);
