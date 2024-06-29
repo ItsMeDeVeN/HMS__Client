@@ -1,14 +1,14 @@
 import { Outlet, Navigate } from "react-router-dom";
 
-const ProtectedRoutes = ({ allowedRole }) => {
+const AdminProtectedRoutes = ({ allowedRole }) => {
   const role = localStorage.getItem("Role");
-  if (allowedRole === role) {
+  if (allowedRole == role) {
     var user = localStorage.getItem("Token");
   } else {
     var user = null;
   }
 
-  return user ? <Outlet /> : <Navigate to="/login" />;
+  return user ? <Outlet /> : <Navigate to="/auth/login" />;
 };
 
-export default ProtectedRoutes;
+export default AdminProtectedRoutes
