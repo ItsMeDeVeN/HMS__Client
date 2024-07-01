@@ -12,6 +12,7 @@ const PatientList = ({
   onEdit,
   onSearch,
   onPageChange,
+  onActivation,
   currentPage,
   totalPages,
 }) => {
@@ -172,16 +173,14 @@ const PatientList = ({
                 />
               </div>
             </div>
-            
+
             <table className="min-w-full bg-white border-collapse">
               <thead>
                 <tr className="text-xl">
                   <th className="py-3 px-4 border-b text-left">Name</th>
                   <th className="py-3 px-4 border-b text-left">Email</th>
-                  <th className="py-3 px-4 border-b text-left">Contact</th>
-                  <th className="py-3 px-4 border-b text-left">
-                    Activation Status
-                  </th>
+                  <th className="py-3 px-4 border-b text-left">Phone</th>
+                  <th className="py-3 px-4 border-b text-left">Status</th>
                   <th className="py-3 px-4 border-b text-left">Actions</th>
                 </tr>
               </thead>
@@ -189,11 +188,33 @@ const PatientList = ({
                 {data && Array.isArray(data) && data.length > 0 ? (
                   data.map((user) => (
                     <tr key={user._id} className="hover:bg-gray-100">
-                      <td className="py-2 px-4 border-b font-semibold cursor-pointer" onClick={() => {setSelectedPatient(user)}}>{user.name}</td>
+                      <td
+                        className="py-2 px-4 border-b font-semibold cursor-pointer"
+                        onClick={() => {
+                          setSelectedPatient(user);
+                        }}
+                      >
+                        {user.name}
+                      </td>
                       <td className="py-2 px-4 border-b">{user.email}</td>
                       <td className="py-2 px-4 border-b">{user.contact}</td>
                       <td
-                        className={`py-2 px-4 border-b font-bold ${
+                        onClick={() => {
+                          const confirmationMessage = user.activation_status
+                            ? "Do you want to set the status to Inactive ?"
+                            : "Do you want to set the status to Active ?";
+                          Swal.fire({
+                            title: confirmationMessage,
+                            showCancelButton: true,
+                            confirmButtonText: "Yes",
+                          }).then((result) => {
+                            if (result.isConfirmed) {
+                              Swal.fire("Changed Succesfully", "", "success");
+                              onActivation(user._id);
+                            }
+                          });
+                        }}
+                        className={`py-2 px-4 border-b font-bold cursor-pointer ${
                           user.activation_status
                             ? "text-green-500"
                             : "text-red-500"

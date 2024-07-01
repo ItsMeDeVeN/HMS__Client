@@ -89,6 +89,20 @@ const ManageDoctor = () => {
     setSelectedDoctorId(id); // Open the EditDoctorForm by setting the selected doctor ID
   };
 
+  const onActivation = async (id) => {
+    try {
+      const res = await axios.post("http://localhost:3000/api/activation", {
+        id,
+      });
+      if (res.status === 200) {
+        fetchData();
+      }
+    } catch (e) {
+      console.log("Error while updating activation Status:", e);
+      toast.error("Error Changing Activation Status!!!");
+    }
+  };
+
   const handleCloseEditForm = () => {
     setSelectedDoctorId(null); // Close the EditDoctorForm by clearing the selected doctor ID
   };
@@ -102,6 +116,7 @@ const ManageDoctor = () => {
         onEdit={onEdit}
         onSearch={onSearch}
         onPageChange={onPageChange}
+        onActivation={onActivation}
         currentPage={filterData.page}
         totalPages={totalPages}
       />

@@ -5,6 +5,7 @@ import * as Yup from "yup";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
+
 const EditDOCDetails = ({ doctorId, onClose, onUpdate }) => {
   const [formData, setFormData] = useState({
     name: "",
@@ -17,8 +18,8 @@ const EditDOCDetails = ({ doctorId, onClose, onUpdate }) => {
     department: "",
     availability: [],
     consultingfee: "",
-    activation_status: false,
   });
+
 
   useEffect(() => {
     const fetchDoctorDetails = async () => {
@@ -45,7 +46,6 @@ const EditDOCDetails = ({ doctorId, onClose, onUpdate }) => {
     department: formData.department,
     consultingfee: formData.consultingfee,
     availability: formData.availability,
-    activation_status: formData.activation_status,
   };
 
   const validationSchema = Yup.object({
@@ -62,7 +62,6 @@ const EditDOCDetails = ({ doctorId, onClose, onUpdate }) => {
     dateofbirth: Yup.date().required("Date of Birth is required"),
     age: Yup.number().required("Age is required"),
     department: Yup.string().required("Department is required"),
-    activation_status: Yup.boolean().required("Activation Status is required"),
     consultingfee: Yup.number().required("Consulting Fee is required"),
     availability: Yup.array().of(
       Yup.object().shape({
@@ -74,7 +73,7 @@ const EditDOCDetails = ({ doctorId, onClose, onUpdate }) => {
 
   const handleSubmit = async (values, { setSubmitting }) => {
     try {
-      console.log(values);
+      console.log("Handle Submit Called");
       const res = await axios.post("http://localhost:3000/api/updateDoctor", {
         ...values,
         _id: doctorId,
@@ -287,37 +286,6 @@ const EditDOCDetails = ({ doctorId, onClose, onUpdate }) => {
                   className="text-red-500 text-sm"
                 />
               </div>
-
-              {/* Activation Status */}
-              <div className="flex items-center mb-4">
-                <label className="mr-4 flex items-center">
-                  <Field
-                    type="radio"
-                    name="activation_status"
-                    value={true}
-                    checked={values.activation_status === true}
-                    onChange={() => setFieldValue("activation_status", true)}
-                    className="mr-1"
-                  />
-                  Active
-                </label>
-                <label className="flex items-center">
-                  <Field
-                    type="radio"
-                    name="activation_status"
-                    value={false}
-                    checked={values.activation_status === false}
-                    onChange={() => setFieldValue("activation_status", false)}
-                    className="mr-1"
-                  />
-                  Inactive
-                </label>
-              </div>
-              <ErrorMessage
-                name="activation_status"
-                component="div"
-                className="text-red-500 text-sm"
-              />
 
               {/* Availability Section */}
               <div className="flex flex-col mb-4">

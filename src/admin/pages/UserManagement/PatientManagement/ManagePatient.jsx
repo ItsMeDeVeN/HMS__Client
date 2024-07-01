@@ -29,7 +29,7 @@ const ManagePatient = () => {
         setData(res.data.patients);
         // console.log(res.data)
         settotalPages(res.data.totalPages);
-        // console.log("Total Patients ==>",res.data.patients.length);    
+        // console.log("Total Patients ==>",res.data.patients.length);
       }
     } catch (e) {
       console.error("Error fetching data:", e);
@@ -76,6 +76,20 @@ const ManagePatient = () => {
     setSelectedPatientId(id);
   };
 
+  const onActivation = async (id) => {
+    try {
+      const res = await axios.post("http://localhost:3000/api/activation", {
+        id,
+      });
+      if (res.status === 200) {
+        fetchData();
+      }
+    } catch (e) {
+      console.log("Error while updating activation Status:", e);
+      toast.error("Error Changing Activation Status!!!");
+    }
+  };
+
   const handleCloseEditForm = () => {
     setSelectedPatientId(null);
   };
@@ -88,6 +102,7 @@ const ManagePatient = () => {
         onEdit={onEdit}
         onSearch={onSearch}
         onPageChange={onPageChange}
+        onActivation={onActivation}
         currentPage={filterData.page} // Pass current page to DoctorList
         totalPages={totalPages} // Calculate total pages
       />

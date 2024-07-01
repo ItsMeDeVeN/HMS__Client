@@ -16,7 +16,6 @@ const EditPatientDetails = ({ patientId, onClose, onUpdate }) => {
     age: "",
     address: "",
     medicalHistory: "",
-    activation_status: true, // Added activation_status to initial state
   });
 
   useEffect(() => {
@@ -43,7 +42,6 @@ const EditPatientDetails = ({ patientId, onClose, onUpdate }) => {
     age: formData.age,
     address: formData.address,
     medicalHistory: formData.medicalHistory,
-    activation_status: formData.activation_status, // Added activation_status to initialValues
   };
 
   const validationSchema = Yup.object({
@@ -61,7 +59,6 @@ const EditPatientDetails = ({ patientId, onClose, onUpdate }) => {
     age: Yup.number().required("Age is required"),
     address: Yup.string().required("Address is required"),
     medicalHistory: Yup.string(),
-    activation_status: Yup.boolean().required("Activation status is required"), // Added validation for activation_status
   });
 
   const handleSubmit = async (values, { setSubmitting }) => {
@@ -277,45 +274,7 @@ const EditPatientDetails = ({ patientId, onClose, onUpdate }) => {
                 />
               </div>
 
-              {/* Activation Status */}
-              <div className="flex flex-col mb-4">
-                <label
-                  htmlFor="activation_status"
-                  className="font-semibold text-gray-700"
-                  style={{ textShadow: "1px 1px 1px rgba(0, 0, 0, 0.1)" }}
-                >
-                  Activation Status
-                </label>
-                <div className="flex items-center">
-                  <label className="mr-4">
-                    <Field
-                      type="radio"
-                      name="activation_status"
-                      value="true"
-                      checked={values.activation_status === true}
-                      onChange={() => setFieldValue("activation_status", true)}
-                      className="mr-1"
-                    />
-                    Active
-                  </label>
-                  <label>
-                    <Field
-                      type="radio"
-                      name="activation_status"
-                      value="false"
-                      checked={values.activation_status === false}
-                      onChange={() => setFieldValue("activation_status", false)}
-                      className="mr-1"
-                    />
-                    Inactive
-                  </label>
-                </div>
-                <ErrorMessage
-                  name="activation_status"
-                  component="div"
-                  className="text-red-500 text-sm"
-                />
-              </div>
+             
 
               {/* Buttons */}
               <div className="flex justify-end">
