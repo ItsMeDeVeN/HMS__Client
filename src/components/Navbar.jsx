@@ -67,7 +67,7 @@ const Navbar = ({ role }) => {
 
   return (
     <div className="flex justify-between items-center p-4 h-20 ml-0 bg-gray-300 text-white shadow-lg">
-      <h1 className="text-3xl font-bold text-black">HMS</h1>
+      <h1 onClick={() => {navigate('/');}}className="text-3xl font-bold text-black cursor-pointer">HMS</h1>
       <div className="relative">
         <img
           src={profile}

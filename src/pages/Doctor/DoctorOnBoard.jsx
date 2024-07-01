@@ -381,12 +381,12 @@ const DoctorOnBoard = () => {
               <div className="flex flex-col mb-4">
                 <label
                   htmlFor="day"
-                  className="font-semibold text-gray-700"
+                  className="font-semibold pb-1 text-gray-700"
                   style={{
                     textShadow: "1px 1px 1px rgba(0, 0, 0, 0.1)",
                   }}
                 >
-                  Availability
+                  Availability (Add timings slot-wise for a particlar day)
                 </label>
                 <div className="flex space-x-2 mb-2">
                   <Field
@@ -407,7 +407,7 @@ const DoctorOnBoard = () => {
                     type="text"
                     name="timeSlot"
                     className="border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400 transition-shadow"
-                    placeholder="e.g., 9AM - 5PM"
+                    placeholder="e.g., 9AM - 10AM"
                   />
                   <button
                     type="button"

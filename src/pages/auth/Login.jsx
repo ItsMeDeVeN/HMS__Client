@@ -38,13 +38,15 @@ const Login = () => {
           localStorage.setItem("Token",res.data.token)
           localStorage.setItem("User_Id",res.data.user._id)
           localStorage.setItem("Role",res.data.user.role)
+          localStorage.setItem("Name",res.data.user.name)
         setTimeout(() => {
           navigate("/Doctor/DashBoard");
         }, 2000);
       } else if (res.data.user.role === "Patient") {
         localStorage.setItem("Token",res.data.token)
         localStorage.setItem("User_Id",res.data.user._id)
-          localStorage.setItem("Role",res.data.user.role)
+        localStorage.setItem("Role",res.data.user.role)
+        localStorage.setItem("Name",res.data.user.name)
         setTimeout(() => {
           navigate("/Patient/DashBoard");
         }, 2000);

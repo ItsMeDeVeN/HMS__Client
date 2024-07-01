@@ -28,10 +28,11 @@ const AdminLogin = () => {
   const handleResponse = (status, message, res) => {
     if (status === 200) {
       toast.success(message);
-      localStorage.setItem("Token",res.data.token)   
       console.log(res.data)
+      localStorage.setItem("Token",res.data.token)   
       localStorage.setItem("User_Id",res.data.admin._id)
       localStorage.setItem("Role",res.data.admin.role)
+      localStorage.setItem("Name",res.data.admin.name)
       console.log(res.data)
         setTimeout(() => {
           navigate("/Admin/Dashboard");

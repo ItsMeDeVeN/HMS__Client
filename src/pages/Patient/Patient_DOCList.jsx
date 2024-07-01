@@ -115,7 +115,7 @@ const Patient_DOCList = ({
                           Day
                         </h3>
                       </div>
-                      <div className="w-2/3">
+                      <div className="w-1/3">
                         <h3 className="text-lg font-medium text-gray-700">
                           Timing
                         </h3>
@@ -126,9 +126,12 @@ const Patient_DOCList = ({
                         <div className="w-1/3">
                           <p className="text-gray-600">{slot.day}</p>
                         </div>
-                        <div className="w-2/3">
+                        <div className="w-fit">
                           <p className="text-gray-600">{slot.timeSlot}</p>
                         </div>
+                        <button className="w-fit ml-20 bg-green-500 text-white py-1 px-3 rounded-lg shadow-md hover:bg-green-700 hover:shadow-lg ">
+                          Book
+                        </button>
                       </div>
                     ))}
                   </>

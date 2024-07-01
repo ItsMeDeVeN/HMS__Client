@@ -94,7 +94,7 @@ const AllRoutes = () => {
               element={<Patient_Appointments />}
             ></Route>
             <Route
-              path="/Patient/Patientdoclist"
+              path="/Patient/Doctors"
               element={<Managedoclist />}
             ></Route>
             <Route
