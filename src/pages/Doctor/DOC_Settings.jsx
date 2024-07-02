@@ -1,102 +1,119 @@
 import React, { useEffect, useState } from "react";
 import DOCDashboardlayout from "../../layouts/DOCDashboardlayout";
 import axios from "axios";
+import { Formik, Field, Form, ErrorMessage } from "formik";
+import * as Yup from "yup";
 import profile from "../../components/profile.jpg";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 const DOC_Settings = () => {
-
-  // const getUserId = () => {}
-
   const id = localStorage.getItem("User_Id");
-  const [data, setData] = useState({});
+  const [isEditing, setIsEditing] = useState(false);
   const [formData, setFormData] = useState({
     name: "",
     email: "",
     contact: "",
-    consultingfee: "",
-    department: "",
-    age: "",
-    dateofbirth: "",
-    gender: "",
     address: "",
+    gender: "",
+    dateofbirth: "",
+    age: "",
+    department: "",
     availability: [],
-    day: "",
-    timeSlot: "",
+    consultingfee: "",
   });
-  const [isEditing, setIsEditing] = useState(false);
 
-  const fetchData = async () => {
+  const fetchDoctorDetails = async () => {
     try {
       const res = await axios.post("http://localhost:3000/api/getdetails", {
         id: id,
       });
-      if (res.data && res.data.details) {
-        setData(res.data.details);
-        setFormData({
-          ...res.data.details,
-          availability: res.data.details.availability || [],
-          day: "",
-          timeSlot: "",
-        });
-      } else {
-        console.error("Invalid response structure:", res.data);
-      }
+      setFormData(res.data.details);
     } catch (e) {
       console.error("Error fetching doctor details:", e);
     }
   };
 
   useEffect(() => {
-    fetchData();
-  }, [isEditing]);
+    fetchDoctorDetails();
+  }, [id]);
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+  const initialValues = {
+    name: formData.name,
+    email: formData.email,
+    contact: formData.contact,
+    address: formData.address,
+    gender: formData.gender,
+    dateofbirth: formData.dateofbirth,
+    age: formData.age,
+    department: formData.department,
+    consultingfee: formData.consultingfee,
+    availability: formData.availability,
+  };
+
+  const validationSchema = Yup.object({
+    name: Yup.string()
+      .max(50, "Must be 50 characters or less")
+      .required("Full Name is required"),
+    contact: Yup.string()
+      .matches(/^[0-9]+$/, "Must be only digits")
+      .min(10, "Must be exactly 10 digits")
+      .max(10, "Must be exactly 10 digits")
+      .required("Contact Details is required"),
+    address: Yup.string().required("Address is required"),
+    gender: Yup.string().required("Gender is required"),
+    dateofbirth: Yup.date().required("Date of Birth is required"),
+    age: Yup.number().required("Age is required"),
+    department: Yup.string().required("Department is required"),
+    consultingfee: Yup.number().required("Consulting Fee is required"),
+    availability: Yup.array().of(
+      Yup.object().shape({
+        day: Yup.string().required("Day is required"),
+        timeSlot: Yup.string().required("Time Slot is required"),
+      })
+    ),
+  });
+
+  const handleSubmit = async (values, { setSubmitting }) => {
     try {
-      const res = await axios.post("http://localhost:3000/api/updatedoctor", {
-        ...formData,
+      console.log("Handle Submit Called");
+      const res = await axios.post("http://localhost:3000/api/updateDoctor", {
+        ...values,
         _id: id,
       });
-      console.log(res)
-      if (res.data.success) {
-        setData(formData);
-        setIsEditing(false);
-        toast.success("Details updated successfully");
-      } else {
-        toast.error("Failed to update details");
+      if (res.status === 200) {
+        toast.success("Doctor details updated successfully!", {
+          onClose: () => {
+            fetchDoctorDetails();
+            setIsEditing(false);
+          },
+        });
       }
-    } catch (error) {
-      console.error("Error updating doctor details:", error);
-      toast.error("Someting Went Wrong !!");
+    } catch (e) {
+      console.error("Error updating doctor details:", e);
+    } finally {
+      setSubmitting(false);
     }
   };
 
-  const addAvailability = () => {
-    if (formData.day && formData.timeSlot) {
-      setFormData((prevFormData) => ({
-        ...prevFormData,
-        availability: [
-          ...prevFormData.availability,
-          { day: formData.day, timeSlot: formData.timeSlot },
-        ],
-        day: "",
-        timeSlot: "",
-      }));
+  const addAvailability = (values, setFieldValue) => {
+    const { availability, day, timeSlot } = values;
+    if (day && timeSlot) {
+      setFieldValue("availability", [...availability, { day, timeSlot }]);
+      setFieldValue("day", "");
+      setFieldValue("timeSlot", "");
     }
   };
-
-  const removeAvailability = (index) => {
-    setFormData((prevFormData) => {
-      const newAvailability = [...prevFormData.availability];
-      newAvailability.splice(index, 1);
-      return { ...prevFormData, availability: newAvailability };
-    });
+  const removeAvailability = (index, setFieldValue) => {
+    setFieldValue(
+      "availability",
+      formData.availability.filter((_, i) => i !== index)
+    );
   };
 
   return (
     <DOCDashboardlayout>
+      <ToastContainer />
       <div className="min-h-screen bg-gray-100">
         <div className="flex justify-between items-center h-20 bg-gradient-to-r from-gray-800 to-gray-700 text-gray-100 text-2xl font-bold px-6 shadow-lg">
           <span className="tracking-wide">Doctor Profile</span>
@@ -108,8 +125,8 @@ const DOC_Settings = () => {
           </button>
         </div>
         <div className="bg-gray-100 min-h-screen px-6 py-8">
-          <div className="max-w-4xl mx-auto bg-white rounded-xl shadow-lg overflow-hidden transition duration-300 ease-in-out transform hover:shadow-xl">
-            <div className="px-8 py-6">
+          <div className="max-w-full mx-auto bg-white rounded-xl shadow-lg overflow-hidden transition duration-300 ease-in-out transform hover:shadow-xl">
+            <div className="px-24 py-10">
               <div className="flex flex-col md:flex-row items-center">
                 <img
                   src={profile || "/placeholder.jpg"}
@@ -118,145 +135,231 @@ const DOC_Settings = () => {
                 />
                 <div className="mt-6 md:mt-0 md:ml-8 text-center md:text-left">
                   <h2 className="text-4xl font-bold text-gray-800 mb-2">
-                    {data.name}
+                    {initialValues.name}
                   </h2>
                   <p className="text-gray-600 text-xl mb-1">
-                    {data.department}
+                    {initialValues.department}
                   </p>
-                  <p className="text-gray-600">{data.email}</p>
+                  <p className="text-gray-600">{initialValues.email}</p>
                 </div>
               </div>
 
               {isEditing ? (
-                <form onSubmit={handleSubmit}>
-                  <div className="mt-10">
-                    <h3 className="text-2xl font-semibold text-gray-800 mb-4 pb-2 border-b-2 border-gray-200">
-                      Personal Information
-                    </h3>
-                    <div className="mt-4 space-y-3">
-                      <div className="flex items-center">
-                        <label className="font-semibold w-20">Name:</label>
-                        <input
-                          type="text"
-                          value={formData.name}
-                          onChange={(e) =>
-                            setFormData({
-                              ...formData,
-                              name: e.target.value,
-                            })
-                          }
-                          className="border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400 transition-shadow"
-                        />
-                      </div>
-                      <div className="flex items-center">
-                        <label className="font-semibold w-20">Gender:</label>
-                        <input
-                          type="text"
-                          value={formData.gender}
-                          onChange={(e) =>
-                            setFormData({
-                              ...formData,
-                              gender: e.target.value,
-                            })
-                          }
-                          className="border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400 transition-shadow"
-                        />
-                      </div>
-                      <div className="flex items-center">
-                        <label className="font-semibold w-20">DOB:</label>
-                        <input
-                          type="date"
-                          value={formData.dateofbirth}
-                          onChange={(e) =>
-                            setFormData({
-                              ...formData,
-                              dateofbirth: e.target.value,
-                            })
-                          }
-                          className="border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400 transition-shadow"
-                        />
-                      </div>
-                      <div className="flex items-center">
-                        <label className="font-semibold w-20">Age:</label>
-                        <input
-                          type="number"
-                          value={formData.age}
-                          onChange={(e) =>
-                            setFormData({
-                              ...formData,
-                              age: e.target.value,
-                            })
-                          }
-                          className="border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400 transition-shadow"
-                        />
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className="mt-10">
-                    <h3 className="text-2xl font-semibold text-gray-800 mb-4 pb-2 border-b-2 border-gray-200">
-                      Professional Information
-                    </h3>
-                    <div className="mt-4 space-y-3">
-                      <div className="flex items-center">
-                        <label className="font-semibold w-40">
-                          Department:
-                        </label>
-                        <input
-                          type="text"
-                          value={formData.department}
-                          onChange={(e) =>
-                            setFormData({
-                              ...formData,
-                              department: e.target.value,
-                            })
-                          }
-                          className="border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400 transition-shadow"
-                        />
-                      </div>
-                      <div className="flex items-center">
-                        <label className="font-semibold w-40">
-                          Consulting Fee:
-                        </label>
-                        <input
-                          type="number"
-                          value={formData.consultingfee}
-                          onChange={(e) =>
-                            setFormData({
-                              ...formData,
-                              consultingfee: e.target.value,
-                            })
-                          }
-                          className="border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400 transition-shadow"
-                        />
-                      </div>
-                    </div>
-                    <div className="mt-10">
-                      <h3 className="text-2xl font-semibold mb-4 pb-2 border-b-2 border-gray-200">
-                        Availability
-                      </h3>
-                      <div className="flex flex-col mb-4">
-                        <label
-                          htmlFor="availability"
-                          className="font-semibold text-gray-700"
-                          style={{
-                            textShadow: "1px 1px 1px rgba(0, 0, 0, 0.1)",
-                          }}
-                        >
-                          Availability (Add timings slot-wise for a particular
-                          day)
-                        </label>
-                        <div className="flex space-x-2 mb-2">
-                          <select
-                            name="day"
-                            value={formData.day}
-                            onChange={(e) =>
-                              setFormData({
-                                ...formData,
-                                day: e.target.value,
-                              })
-                            }
+                <div className="bg-white p-6 rounded shadow-md w-full max-w-full overflow-y-auto max-h-full">
+                  <h2 className="text-2xl font-bold mb-4">
+                    Edit Doctor Details
+                  </h2>
+                  <Formik
+                    initialValues={initialValues}
+                    validationSchema={validationSchema}
+                    onSubmit={handleSubmit}
+                    enableReinitialize
+                  >
+                    {({ values, setFieldValue }) => (
+                      <Form>
+                        {/* Existing form fields */}
+                        <div className="flex flex-col mb-4">
+                          <label
+                            htmlFor="name"
+                            className="font-semibold text-gray-700"
+                            style={{
+                              textShadow: "1px 1px 1px rgba(0, 0, 0, 0.1)",
+                            }}
+                          >
+                            Name
+                          </label>
+                          <Field
+                            type="text"
+                            name="name"
                             className="border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400 transition-shadow"
+                          />
+                          <ErrorMessage
+                            name="name"
+                            component="div"
+                            className="text-red-500 text-sm"
+                          />
+                        </div>
+
+                        <div className="flex flex-col mb-4">
+                          <label
+                            htmlFor="contact"
+                            className="font-semibold text-gray-700"
+                            style={{
+                              textShadow: "1px 1px 1px rgba(0, 0, 0, 0.1)",
+                            }}
+                          >
+                            Contact
+                          </label>
+                          <Field
+                            type="text"
+                            name="contact"
+                            className="border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400 transition-shadow"
+                          />
+                          <ErrorMessage
+                            name="contact"
+                            component="div"
+                            className="text-red-500 text-sm"
+                          />
+                        </div>
+                        <div className="flex flex-col mb-4">
+                          <label
+                            htmlFor="address"
+                            className="font-semibold text-gray-700"
+                            style={{
+                              textShadow: "1px 1px 1px rgba(0, 0, 0, 0.1)",
+                            }}
+                          >
+                            Address
+                          </label>
+                          <Field
+                            type="text"
+                            name="address"
+                            className="border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400 transition-shadow"
+                          />
+                          <ErrorMessage
+                            name="address"
+                            component="div"
+                            className="text-red-500 text-sm"
+                          />
+                        </div>
+                        <div className="flex flex-col mb-4">
+                          <label
+                            htmlFor="gender"
+                            className="font-semibold text-gray-700"
+                            style={{
+                              textShadow: "1px 1px 1px rgba(0, 0, 0, 0.1)",
+                            }}
+                          >
+                            Gender
+                          </label>
+                          <Field
+                            as="select"
+                            name="gender"
+                            className="border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400 transition-shadow"
+                          >
+                            <option value="">Select Gender</option>
+                            <option value="Male">Male</option>
+                            <option value="Female">Female</option>
+                            <option value="Other">Others</option>
+                          </Field>
+                          <ErrorMessage
+                            name="gender"
+                            component="div"
+                            className="text-red-500 text-sm"
+                          />
+                        </div>
+
+                        <div className="flex flex-col mb-4">
+                          <label
+                            htmlFor="dateofbirth"
+                            className="font-semibold text-gray-700"
+                            style={{
+                              textShadow: "1px 1px 1px rgba(0, 0, 0, 0.1)",
+                            }}
+                          >
+                            Date of Birth
+                          </label>
+                          <Field
+                            type="date"
+                            name="dateofbirth"
+                            className="border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400 transition-shadow"
+                          />
+                          <ErrorMessage
+                            name="dateofbirth"
+                            component="div"
+                            className="text-red-500 text-sm"
+                          />
+                        </div>
+                        <div className="flex flex-col mb-4">
+                          <label
+                            htmlFor="age"
+                            className="font-semibold text-gray-700"
+                            style={{
+                              textShadow: "1px 1px 1px rgba(0, 0, 0, 0.1)",
+                            }}
+                          >
+                            Age
+                          </label>
+                          <Field
+                            type="number"
+                            name="age"
+                            className="border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400 transition-shadow"
+                          />
+                          <ErrorMessage
+                            name="age"
+                            component="div"
+                            className="text-red-500 text-sm"
+                          />
+                        </div>
+                        <div className="flex flex-col mb-4">
+                          <label
+                            htmlFor="department"
+                            className="font-semibold text-gray-700"
+                            style={{
+                              textShadow: "1px 1px 1px rgba(0, 0, 0, 0.1)",
+                            }}
+                          >
+                            Department
+                          </label>
+                          <Field
+                            as="select"
+                            name="department"
+                            className="border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400 transition-shadow"
+                          >
+                            <option value="">Select Department</option>
+                            <option value="Cardiology">Cardiology</option>
+                            <option value="Dermatology">Dermatology</option>
+                            <option value="Neurology">Neurology</option>
+                            <option value="Oncology">Oncology</option>
+                            <option value="Pediatrics">Pediatrics</option>
+                            <option value="Radiology">Radiology</option>
+                            <option value="Surgery">Surgery</option>
+                            <option value="General Medicine">
+                              General Medicine
+                            </option>
+                          </Field>
+                          <ErrorMessage
+                            name="department"
+                            component="div"
+                            className="text-red-500 text-sm"
+                          />
+                        </div>
+                        <div className="flex flex-col mb-4">
+                          <label
+                            htmlFor="consultingfee"
+                            className="font-semibold text-gray-700"
+                            style={{
+                              textShadow: "1px 1px 1px rgba(0, 0, 0, 0.1)",
+                            }}
+                          >
+                            Consulting Fee
+                          </label>
+                          <Field
+                            type="number"
+                            name="consultingfee"
+                            className="border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400 transition-shadow"
+                          />
+                          <ErrorMessage
+                            name="consultingfee"
+                            component="div"
+                            className="text-red-500 text-sm"
+                          />
+                        </div>
+
+                        <div className="flex flex-col mb-4">
+                          <label
+                            htmlFor="availability"
+                            className="font-semibold text-gray-700"
+                            style={{
+                              textShadow: "1px 1px 1px rgba(0, 0, 0, 0.1)",
+                            }}
+                          >
+                            Availability
+                          </label>
+                          <Field
+                            as="select"
+                            name="day"
+                            className="border border-gray-300 rounded-md px-3 py-2 mb-2 focus:outline-none focus:ring-2 focus:ring-blue-400 transition-shadow"
                           >
                             <option value="">Select Day</option>
                             <option value="Monday">Monday</option>
@@ -266,137 +369,165 @@ const DOC_Settings = () => {
                             <option value="Friday">Friday</option>
                             <option value="Saturday">Saturday</option>
                             <option value="Sunday">Sunday</option>
-                          </select>
-                          <input
+                          </Field>
+                          <Field
                             type="text"
-                            value={formData.timeSlot}
-                            onChange={(e) =>
-                              setFormData({
-                                ...formData,
-                                timeSlot: e.target.value,
-                              })
-                            }
+                            name="timeSlot"
+                            placeholder="Enter Time Slot"
                             className="border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400 transition-shadow"
+                          />
+                          <ErrorMessage
+                            name="availability"
+                            component="div"
+                            className="text-red-500 text-sm"
                           />
                           <button
                             type="button"
-                            onClick={addAvailability}
-                            className="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-6 rounded-full transition duration-300 ease-in-out transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-blue-400"
+                            onClick={() =>
+                              addAvailability(values, setFieldValue)
+                            }
+                            className="mt-2 bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded-md  focus:outline-none focus:ring-2 focus:ring-blue-400"
                           >
-                            Add
+                            Add Slot
                           </button>
                         </div>
-                        <div>
-                          {formData.availability.length > 0 ? (
-                            <ul>
-                              {formData.availability.map((slot, index) => (
-                                <li
-                                  key={index}
-                                  className="flex items-center mb-2"
-                                >
-                                  <span className="font-semibold">
-                                    {slot.day}:{" "}
-                                  </span>
-                                  <span className="ml-2">{slot.timeSlot}</span>
-                                  <button
-                                    type="button"
-                                    onClick={() => removeAvailability(index)}
-                                    className="ml-2 text-red-500"
-                                  >
-                                    Remove
-                                  </button>
-                                </li>
-                              ))}
-                            </ul>
-                          ) : (
-                            <p>No availability slots added yet.</p>
-                          )}
+
+                        <div className="mt-4">
+                          {values.availability.map((slot, index) => (
+                            <div
+                              key={index}
+                              className="flex items-center justify-between mb-2 border-b pb-2"
+                            >
+                              <span className="text-gray-700">
+                                {slot.day}: {slot.timeSlot}
+                              </span>
+                              <button
+                                type="button"
+                                onClick={() =>
+                                  removeAvailability(index, setFieldValue)
+                                }
+                                className="bg-red-500 hover:bg-red-600 text-white font-semibold py-1 px-2 rounded-md transition duration-300 ease-in-out transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-red-400"
+                              >
+                                Remove
+                              </button>
+                            </div>
+                          ))}
                         </div>
-                      </div>
-                    </div>
-                    <div className="mt-10 flex justify-center">
-                      <button
-                        type="submit"
-                        className="bg-green-500 hover:bg-green-600 text-white font-semibold py-3 px-8 rounded-full transition duration-300 ease-in-out transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-green-400"
-                      >
-                        Save Changes
-                      </button>
-                    </div>
-                  </div>
-                </form>
+
+                        <div className="mt-6">
+                          <button
+                            type="submit"
+                            className="bg-green-500 hover:bg-green-600 text-white font-semibold py-2 px-4 rounded-md transition duration-300 ease-in-out transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-green-400"
+                          >
+                            Save
+                          </button>
+                        </div>
+                      </Form>
+                    )}
+                  </Formik>
+                </div>
               ) : (
-                <div className="mt-10">
-                  <h3 className="text-2xl font-semibold text-gray-800 mb-4 pb-2 border-b-2 border-gray-200">
-                    Personal Information
-                  </h3>
-                  <div className="mt-4 space-y-3">
-                    <div className="flex items-center">
-                      <label className="font-semibold w-20">Name:</label>
-                      <span>{data.name}</span>
-                    </div>
-                    <div className="flex items-center">
-                      <label className="font-semibold w-20">Gender:</label>
-                      <span>{data.gender}</span>
-                    </div>
-                    <div className="flex items-center">
-                      <label className="font-semibold w-20">DOB:</label>
-                      <span>{data.dateofbirth}</span>
-                    </div>
-                    <div className="flex items-center">
-                      <label className="font-semibold w-20">Age:</label>
-                      <span>{data.age}</span>
-                    </div>
-                  </div>
-
-                  <h3 className="text-2xl font-semibold text-gray-800 mt-10 mb-4 pb-2 border-b-2 border-gray-200">
-                    Professional Information
-                  </h3>
-                  <div className="mt-4 space-y-3">
-                    <div className="flex items-center">
-                      <label className="font-semibold w-40">Department:</label>
-                      <span>{data.department}</span>
-                    </div>
-                    <div className="flex items-center">
-                      <label className="font-semibold w-40">
-                        Consulting Fee:
-                      </label>
-                      <span>{data.consultingfee}</span>
-                    </div>
-                  </div>
-
-                  <h2 className="pt-2 flex items-center font-semibold w-40">
-                    Availability:
-                  </h2>
-                  {data.availability && data.availability.length > 0 ? (
-                    <div>
-                      <div className="flex items-start mt-2">
-                        <div className="w-1/3">
-                          <h3 className="text-lg font-medium text-gray-700">
-                            Day
-                          </h3>
-                        </div>
-                        <div className="w-2/3">
-                          <h3 className="text-lg font-medium text-gray-700">
-                            Timing
-                          </h3>
-                        </div>
+                <div>
+                  <div className="mt-8">
+                    <h3 className="text-3xl font-bold text-gray-800 mb-4 pb-2 border-b-2 border-gray-200">
+                      Personal Information
+                    </h3>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                      <div>
+                        <p className="font-bold text-gray-700">Name</p>
+                        <p className="text-gray-800">{formData.name}</p>
                       </div>
-                      {data.availability.map((slot, index) => (
-                        <div key={index} className="flex items-start mt-2">
+                      <div>
+                        <p className="text-xl font-semibold text-gray-700">
+                          Contact
+                        </p>
+                        <p className="text-gray-800">{formData.contact}</p>
+                      </div>
+                      <div>
+                        <p className="text-xl font-semibold text-gray-700">
+                          Address
+                        </p>
+                        <p className="text-gray-800">{formData.address}</p>
+                      </div>
+                      <div>
+                        <p className="text-xl font-semibold text-gray-700">
+                          Gender
+                        </p>
+                        <p className="text-gray-800">{formData.gender}</p>
+                      </div>
+                      <div>
+                        <p className="text-xl font-semibold text-gray-700">
+                          Date of Birth
+                        </p>
+                        <p className="text-gray-800">{formData.dateofbirth}</p>
+                      </div>
+                      <div>
+                        <p className="text-xl font-semibold text-gray-700">
+                          Age
+                        </p>
+                        <p className="text-gray-800">{formData.age}</p>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="mt-8">
+                    <h3 className="text-2xl font-bold text-gray-800 mb-4 pb-2 border-b-2 border-gray-200">
+                      Professional Information
+                    </h3>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                      <div>
+                        <p className="text-xl font-semibold text-gray-700">
+                          Department
+                        </p>
+                        <p className="text-gray-800">{formData.department}</p>
+                      </div>
+                      <div>
+                        <p className="text-xl font-semibold text-gray-700">
+                          Consulting Fee
+                        </p>
+                        <p className="text-gray-800">
+                          {formData.consultingfee}
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="mt-8">
+                    <h3 className="text-2xl font-bold text-gray-800 mb-4 pb-2 border-b-2 border-gray-200">
+                      Availability
+                    </h3>
+                    {formData.availability &&
+                    formData.availability.length > 0 ? (
+                      <div>
+                        <div className="flex items-start mt-2">
                           <div className="w-1/3">
-                            <p className="text-gray-600">{slot.day}</p>
+                            <h4 className="text-lg font-medium text-gray-700">
+                              Day
+                            </h4>
                           </div>
                           <div className="w-2/3">
-                            <p className="text-gray-600">{slot.timeSlot}</p>
+                            <h4 className="text-lg font-medium text-gray-700">
+                              Timing
+                            </h4>
                           </div>
                         </div>
-                      ))}
-                    </div>
-                  ) : (
-                    <div className="text-gray-600 flex items-center">
-                      <span>No Data found</span>
-                    </div>
-                  )}
+                        {formData.availability.map((slot, index) => (
+                          <div key={index} className="flex items-start mt-2">
+                            <div className="w-1/3">
+                              <p className="text-gray-600">{slot.day}</p>
+                            </div>
+                            <div className="w-2/3">
+                              <p className="text-gray-600">{slot.timeSlot}</p>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    ) : (
+                      <div className="text-gray-600 flex items-center">
+                        <span>No Data found</span>
+                      </div>
+                    )}
+                  </div>
                 </div>
               )}
             </div>
@@ -409,4 +540,3 @@ const DOC_Settings = () => {
 };
 
 export default DOC_Settings;
-

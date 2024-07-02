@@ -259,7 +259,7 @@ const EditDOCDetails = ({ doctorId, onClose, onUpdate }) => {
                   <option value="Pediatrics">Pediatrics</option>
                   <option value="Radiology">Radiology</option>
                   <option value="Surgery">Surgery</option>
-                  <option value="General Medicine">Surgery</option>
+                  <option value="General Medicine">General Medicine</option>
                 </Field>
                 <ErrorMessage
                   name="department"
