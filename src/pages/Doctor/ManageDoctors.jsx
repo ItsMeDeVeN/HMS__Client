@@ -10,7 +10,7 @@ const Managedoctors = () => {
   const [totalPages, setTotalPages] = useState(1);
   const [filterData, setFilterData] = useImmer({
     page: 1,
-    pageSize: 4,
+    pageSize: 6,
     searchText: "",
   });
   const [searchText, setSearchText] = useState("");

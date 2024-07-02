@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react';
 import Patient_DOCList from './Patient_DOCList';
 import { useImmer } from 'use-immer';
 import { useDebounce } from 'use-debounce';
@@ -10,11 +10,10 @@ const Managedoclist = () => {
   const [totalPages, setTotalPages] = useState(1);
   const [filterData, setFilterData] = useImmer({
     page: 1,
-    pageSize: 4,
+    pageSize: 6,
     searchText: "",
   });
   const [searchText, setSearchText] = useState("");
-
   const [debouncedSearchText] = useDebounce(searchText, 500);
 
   const fetchData = async () => {
@@ -54,15 +53,37 @@ const Managedoclist = () => {
       draft.page = pageNumber;
     });
   };
+
+  const bookAppointment = async (appointmentData) => {
+    try {
+      const res = await axios.post("http://localhost:3000/api/bookappointment", appointmentData);
+      if (res.status === 200) {
+        toast.success("Appointment Booked Successfully!");
+      }
+    } catch (error) {
+      if (error.response) {
+        if (error.response.status === 409) {
+          toast.error("Appointment already exists!");
+        } else {
+          toast.error(error.response.data.message || "An error occurred while booking the appointment.");
+        }
+      } else {
+        console.error("Error booking appointment:", error);
+        toast.error("Failed to book the appointment. Please try again later.");
+      }
+    }
+  };
+
   return (
     <Patient_DOCList
-    data={data}
-    onSearch={onSearch}
-    onPageChange={onPageChange}
-    currentPage={filterData.page}
-    totalPages={totalPages}
-  />
+      data={data}
+      onSearch={onSearch}
+      onPageChange={onPageChange}
+      currentPage={filterData.page}
+      totalPages={totalPages}
+      bookAppointment={bookAppointment}
+    />
   );
-}
+};
 
-export default Managedoclist
+export default Managedoclist;

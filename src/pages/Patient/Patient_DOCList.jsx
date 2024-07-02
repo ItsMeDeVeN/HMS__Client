@@ -1,21 +1,23 @@
-import React, { useEffect, useState } from "react";
-import axios from "axios";
-import { toast } from "react-toastify";
+import React, { useState } from "react";
 import PatientDashboardlayout from "../../layouts/PatientDashboardlayout";
+import { FaSearch } from "react-icons/fa";
+import profile from "../../components/profile.jpg"
 
 const Patient_DOCList = ({
   data = [],
   onSearch,
   onPageChange,
   currentPage,
-  totalPages,}) => {
-
+  totalPages,
+  bookAppointment,
+}) => {
   const [selectedDoctor, setSelectedDoctor] = useState(null);
-  
+  const patientid = localStorage.getItem("User_Id");
+
   return (
     <div>
       <PatientDashboardlayout>
-      {selectedDoctor ? (
+        {selectedDoctor ? (
           <div className="p-6 bg-white rounded-lg shadow-lg">
             <button
               onClick={() => setSelectedDoctor(null)}
@@ -24,7 +26,7 @@ const Patient_DOCList = ({
               Back
             </button>
             <h1 className="text-3xl font-bold mb-6 text-center text-gray-800 pb-4 border-b-2 border-gray-300">
-            {selectedDoctor.name}
+              {selectedDoctor.name}
             </h1>
             <div className="space-y-6 text-lg">
               <div className="flex items-start">
@@ -129,7 +131,22 @@ const Patient_DOCList = ({
                         <div className="w-fit">
                           <p className="text-gray-600">{slot.timeSlot}</p>
                         </div>
-                        <button className="w-fit ml-20 bg-green-500 text-white py-1 px-3 rounded-lg shadow-md hover:bg-green-700 hover:shadow-lg ">
+                        <button
+                          onClick={() => {
+                            const appointmentData = {
+                              docid: selectedDoctor._id,
+                              docname: selectedDoctor.name,
+                              patientid: patientid,
+                              slotid: slot._id, // Assuming each slot has a unique ID
+                              slot: {
+                                day: slot.day,
+                                timeSlot: slot.timeSlot,
+                              },
+                            };
+                            bookAppointment(appointmentData);
+                          }}
+                          className="w-fit ml-auto mr-96 bg-green-500 text-white py-1 px-3 rounded-lg shadow-md hover:bg-green-700 hover:shadow-lg "
+                        >
                           Book
                         </button>
                       </div>
@@ -157,40 +174,55 @@ const Patient_DOCList = ({
         ) : (
           <div className="text-gray-300 bg-slate-400 shadow-md rounded  mb-6 mx-4 ">
             <div className="flex justify-end">
-              <input
-                type="text"
-                placeholder="Search doctors..."
-                className="bg-gray-100 p-2 w-1/5 border mr-6 text-black border-gray-300 rounded ml-6 mt-6"
-                onChange={(e) => {
-                  onSearch(e.target.value);
-                }}
-              />
+              <div className="relative w-96 mt-5 mr-7">
+                <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+                  <FaSearch className="text-gray-500" />
+                </div>
+                <input
+                  type="text"
+                  placeholder="Search Patients... "
+                  className="w-full bg-gray-100 p-2 pl-10 border border-gray-300 rounded"
+                  onChange={(e) => {
+                    onSearch(e.target.value);
+                  }}
+                />
+              </div>
             </div>
             {data.length > 0 ? (
               <div className="grid grid-cols-3 gap-4 m-6 ">
                 {data.map((doctor) => (
-                  <div
-                    key={doctor._id}
-                    className="p-6 bg-white cursor-pointer rounded-lg shadow-md flex flex-col justify-between hover:bg-gray-200 hover:shadow-lg transition-transform transform hover:-translate-y-1"
-                  >
+              <div
+                key={doctor._id}
+                className="p-6 bg-white cursor-pointer rounded-lg shadow-md flex flex-col justify-between hover:bg-gray-200 hover:shadow-lg transition-transform transform hover:-translate-y-1"
+              >
+                <div>
+                  <div className="flex items-center justify-between mb-4">
                     <div>
-                      <h3 onClick={() => {setSelectedDoctor(doctor)}} className="text-xl underline decoration-solid *:  font-bold text-gray-800">
+                      <h3
+                        onClick={() => setSelectedDoctor(doctor)}
+                        className="text-xl underline font-bold text-gray-800 cursor-pointer"
+                      >
                         {doctor.name}
                       </h3>
                       <p className="text-gray-600 pt-2">{doctor.email}</p>
                       <p className="text-gray-600">{doctor.contact}</p>
                       <p className="text-gray-600">{doctor.department}</p>
                     </div>
-                    <div className="mt-4">
-                      <button
-                        onClick={() => setSelectedDoctor(doctor)}
-                        className="bg-blue-500 text-white py-2 px-4 rounded-lg shadow-md hover:bg-blue-700 hover:shadow-lg transition-transform transform hover:-translate-y-1 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50"
-                      >
-                        View
-                      </button>
+                    <div className="w-28 h-28 overflow-hidden rounded-full">
+                      <img src={profile} alt="Profile" className="object-cover w-full h-full" />
                     </div>
                   </div>
-                ))}
+                  <div className="mt-auto">
+                    <button
+                      onClick={() => setSelectedDoctor(doctor)}
+                      className="bg-blue-500 text-white py-2 px-4 rounded-lg shadow-md hover:bg-blue-700 hover:shadow-lg transition-transform transform hover:-translate-y-1 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50"
+                    >
+                      View
+                    </button>
+                  </div>
+                </div>
+              </div>
+            ))}
               </div>
             ) : (
               <div className="text-gray-600 p-6">No doctors found.</div>
