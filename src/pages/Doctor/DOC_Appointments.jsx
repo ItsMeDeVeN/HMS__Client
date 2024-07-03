@@ -223,7 +223,7 @@ const DOC_Appointments = () => {
                                 title:
                                   "Are you sure you want to verify this appointment?",
                                 text: "You won't be able to revert this!",
-                                icon: "warning",
+                                icon: "question",
                                 showCancelButton: true,
                                 confirmButtonColor: "#3085d6",
                                 cancelButtonColor: "#d33",
@@ -262,7 +262,7 @@ const DOC_Appointments = () => {
                             }
                           });
                         }}
-                        className="mx-auto my-auto bg-red-500 text-black px-2 py-2  rounded-xl">
+                        className="mx-auto my-auto bg-red-700 text-black px-2 py-2  rounded-xl">
                           <MdDeleteForever />
                         </button>
                       </td>
