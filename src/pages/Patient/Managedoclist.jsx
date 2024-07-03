@@ -4,6 +4,7 @@ import { useImmer } from 'use-immer';
 import { useDebounce } from 'use-debounce';
 import axios from 'axios';
 import { toast } from 'react-toastify';
+import Swal from 'sweetalert2';
 
 const Managedoclist = () => {
   const [data, setData] = useState([]);
@@ -58,7 +59,11 @@ const Managedoclist = () => {
     try {
       const res = await axios.post("http://localhost:3000/api/bookappointment", appointmentData);
       if (res.status === 200) {
-        toast.success("Appointment Booked Successfully!");
+        Swal.fire({
+          title: "Booked!",
+          text: "Your appointment request has been placed.",
+          icon: "success"
+        });
       }
     } catch (error) {
       if (error.response) {

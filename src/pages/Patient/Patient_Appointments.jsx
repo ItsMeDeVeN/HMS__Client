@@ -8,14 +8,15 @@ const Patient_Appointments = () => {
 
   const fetchAppointments = async () => {
     try {
-      const patientid = localStorage.getItem("User_Id");
-      if (!patientid) {
+      const id = localStorage.getItem("User_Id");
+      const role = localStorage.getItem("Role");
+      if (!id) {
         // throw new Error("Patient ID not found in local storage");
       }
 
       const res = await axios.post(
-        "http://localhost:3000/api/getallpatientappointments",
-        { patientid }
+        "http://localhost:3000/api/getallappointments",
+        { id: id, role: role}
       );
       setAppointments(res.data.appointments);
       console.log(res)
@@ -35,24 +36,24 @@ const Patient_Appointments = () => {
   return (
    <div>
       <PatientDashboardlayout>
-        <div className="flex justify-center items-center h-16 bg-gray-800 text-2xl font-bold text-gray-300">
-          Appointments
-        </div>
-        <div className="bg-gray-800 text-gray-300 shadow-md rounded my-6 mx-4">
+        <div className="bg-gray-800 text-gray-300 shadow-md rounded mb-6 mx-2">
           <table className="min-w-full bg-white rounded">
             <thead className="bg-gray-800 text-gray-300">
               <tr>
-                <th className="w-1/4 py-3 px-4 uppercase font-semibold text-xl border-b border-gray-700 text-center">
+                <th className="w-1/5 py-3 px-4 uppercase font-semibold text-xl border-b border-gray-700 text-center">
                   Doctor Name
                 </th>
-                <th className="w-1/4 py-3 px-4 uppercase font-semibold text-xl border-b border-gray-700 text-center">
+                <th className="w-1/5 py-3 px-4 uppercase font-semibold text-xl border-b border-gray-700 text-center">
                   Department
                 </th>
-                <th className="w-1/4 py-3 px-4 uppercase font-semibold text-xl border-b border-gray-700 text-center">
+                <th className="w-1/5 py-3 px-4 uppercase font-semibold text-xl border-b border-gray-700 text-center">
                   Date
                 </th>
-                <th className="w-1/4 py-3 px-4 uppercase font-semibold text-xl border-b border-gray-700 text-center">
+                <th className="w-1/5 py-3 px-4 uppercase font-semibold text-xl border-b border-gray-700 text-center">
                   Timings
+                </th>
+                <th className="w-1/5 py-3 px-4 uppercase font-semibold text-xl border-b border-gray-700 text-center">
+                  Status
                 </th>
               </tr>
             </thead>
@@ -63,10 +64,15 @@ const Patient_Appointments = () => {
                     key={index}
                     className="text-base border-b border-gray-400 bg-gray-300"
                   >
-                    <td className="w-1/4 py-3 px-4 font-semibold text-center">{appointment.docname}</td>
-                    <td className="w-1/4 py-3 px-4 font-semibold text-center">department</td>
-                    <td className="w-1/4 py-3 px-4 font-semibold text-center">{appointment.slot.day}</td>
-                    <td className="w-1/4 py-3 px-4 font-semibold text-center">{appointment.slot.timeSlot}</td>
+                    <td className="w-1/5 py-3 px-4 font-semibold text-center">{appointment.docname}</td>
+                    <td className="w-1/5 py-3 px-4 font-semibold text-center">{appointment.docdepartment}</td>
+                    <td className="w-1/5 py-3 px-4 font-semibold text-center">{appointment.slot.day}</td>
+                    <td className="w-1/5 py-3 px-4 font-semibold text-center">{appointment.slot.timeSlot}</td>
+                    <td className={`px-2 py-2 text-center font-bold ${
+                            appointment.appointmentstatus
+                              ? "text-green-500"
+                              : "text-red-500 "
+                          }`}>{appointment.appointmentstatus ? "Approved" : "Pending"}</td>
                     
                   </tr>
                 ))

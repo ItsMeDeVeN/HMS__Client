@@ -3,7 +3,9 @@ import { Formik, Field, Form, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faArrowLeft } from "@fortawesome/free-solid-svg-icons";
 import axios from "axios";
 
 const DoctorOnBoard = () => {
@@ -123,6 +125,15 @@ const DoctorOnBoard = () => {
           backgroundImage: "linear-gradient(to bottom right, #f0f8ff, #e0e0e0)",
         }}
       >
+        <div className="flex">
+          <Link
+            to="/signup"
+            className="text-black font-semibold py-2 hover:bg-slate-100 transition-colors flex items-center space-x-2"
+          >
+            <FontAwesomeIcon icon={faArrowLeft} />
+            <span>Back</span>
+          </Link>
+        </div>
         <h1
           className="text-3xl font-bold mb-6 text-center text-gray-800"
           style={{
@@ -229,7 +240,7 @@ const DoctorOnBoard = () => {
                   <option value="Pediatrics">Pediatrics</option>
                   <option value="Radiology">Radiology</option>
                   <option value="Surgery">Surgery</option>
-                  <option value="General Medicine">Surgery</option>
+                  <option value="General Medicine">General Medicine</option>
                 </Field>
                 <ErrorMessage
                   name="department"

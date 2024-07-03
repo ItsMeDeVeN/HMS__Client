@@ -2,6 +2,8 @@ import React, { useState } from "react";
 import PatientDashboardlayout from "../../layouts/PatientDashboardlayout";
 import { FaSearch } from "react-icons/fa";
 import profile from "../../components/profile.jpg"
+import Swal from "sweetalert2";
+
 
 const Patient_DOCList = ({
   data = [],
@@ -13,6 +15,7 @@ const Patient_DOCList = ({
 }) => {
   const [selectedDoctor, setSelectedDoctor] = useState(null);
   const patientid = localStorage.getItem("User_Id");
+  const patientname = localStorage.getItem("Name")
 
   return (
     <div>
@@ -133,17 +136,33 @@ const Patient_DOCList = ({
                         </div>
                         <button
                           onClick={() => {
-                            const appointmentData = {
-                              docid: selectedDoctor._id,
-                              docname: selectedDoctor.name,
-                              patientid: patientid,
-                              slotid: slot._id, // Assuming each slot has a unique ID
-                              slot: {
-                                day: slot.day,
-                                timeSlot: slot.timeSlot,
-                              },
-                            };
-                            bookAppointment(appointmentData);
+                            Swal.fire({
+                              title: "Are you sure you want to book this slot?",
+                              icon: "warning",
+                              showCancelButton: true,
+                              confirmButtonColor: "#3085d6",
+                              cancelButtonColor: "#d33",
+                              confirmButtonText: "Book!"
+                            }).then((result) => {
+                              if (result.isConfirmed) {
+                                const appointmentData = {
+                                  docid: selectedDoctor._id,
+                                  docname: selectedDoctor.name,
+                                  patientid: patientid,
+                                  patientname: patientname,
+                                  slotid: slot._id, // Assuming each slot has a unique ID
+                                  docdepartment: selectedDoctor.department,
+                                  appointmentstatus: false,
+                                  slot: {
+                                    day: slot.day,
+                                    timeSlot: slot.timeSlot,
+                                  },
+                                };
+                                bookAppointment(appointmentData);
+                                
+                              }
+                            });
+                            
                           }}
                           className="w-fit ml-auto mr-96 bg-green-500 text-white py-1 px-3 rounded-lg shadow-md hover:bg-green-700 hover:shadow-lg "
                         >
