@@ -85,7 +85,7 @@ const Patient_Settings = () => {
               {editMode ? "Cancel" : "Edit"}
             </button>
           </div>
-          <div className="bg-gray-100 min-h-screen px-6 py-8">
+          <div className="bg-gray-100 min-h-screen">
             <div className="max-w-full mx-auto bg-white rounded-xl shadow-lg overflow-hidden transition duration-300 ease-in-out transform hover:shadow-xl">
               <div className="px-8 py-6">
                 <div className="flex flex-col md:flex-row items-center">

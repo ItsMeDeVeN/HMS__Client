@@ -7,12 +7,12 @@ import ProtectedRoutes from "./utils/ProtectedRoutes";
 import DoctorOnBoard from "./pages/Doctor/DoctorOnBoard";
 import DoctorDashBoard from "./pages/Doctor/DoctorDashboard";
 import DOC_Appointments from "./pages/Doctor/DOC_Appointments";
-import DOC_DOCList from "./pages/Doctor/DOC_DOCList";
+import Managedoctors from "./pages/Doctor/Managedoctors";
 import DOC_Settings from "./pages/Doctor/DOC_Settings";
 
 import PatientOnBoard from "./pages/Patient/PatientOnBoard";
 import PatientDashboard from "./pages/Patient/PatientDashboard";
-import Patient_DOCList from "./pages/Patient/Patient_DOCList";
+import Managedoclist from "./pages/Patient/Managedoclist";
 import Patient_Settings from "./pages/Patient/Patient_Settings";
 import Patient_Appointments from "./pages/Patient/Patient_Appointments";
 
@@ -21,14 +21,11 @@ import Landingpage from "./pages/Landing/Landingpage";
 import NotFound from "./NotFound";
 
 import AdminDashboard from "./admin/pages/AdminDashboard";
-import AdminSettings from "./admin/pages/AdminSettings";
 import ManageDoctor from "./admin/pages/UserManagement/DoctorManagement/ManageDoctor";
 import ManagePatient from "./admin/pages/UserManagement/PatientManagement/ManagePatient";
 import AdminLogin from "./admin/pages/auth/AdminLogin";
 import EditDOCDetails from "./admin/pages/UserManagement/DoctorManagement/EditDOCDetails";
 import AdminProtectedRoutes from "./admin/utils/AdminProtectedRoutes";
-import Managedoctors from "./pages/Doctor/Managedoctors";
-import Managedoclist from "./pages/Patient/Managedoclist";
 
 const AllRoutes = () => {
   return (
@@ -49,14 +46,7 @@ const AllRoutes = () => {
               path="/Admin/Patient_List"
               element={<ManagePatient />}
             ></Route>
-            <Route
-              path="/Admin/DOC_List"
-              element={<ManageDoctor />}
-            ></Route>
-            <Route
-              path="/Admin/Settings"
-              element={<AdminSettings />}
-            ></Route>
+            <Route path="/Admin/DOC_List" element={<ManageDoctor />}></Route>
             <Route
               path="/Admin/DOC_List/EditDOCDetails"
               element={<EditDOCDetails />}
@@ -73,14 +63,8 @@ const AllRoutes = () => {
               path="/Doctor/Appointments"
               element={<DOC_Appointments />}
             ></Route>
-            <Route
-              path="/Doctor/Doctors"
-              element={<Managedoctors />}
-            ></Route>
-            <Route
-              path="/Doctor/Settings"
-              element={<DOC_Settings />}
-            ></Route>
+            <Route path="/Doctor/Doctors" element={<Managedoctors />}></Route>
+            <Route path="/Doctor/Settings" element={<DOC_Settings />}></Route>
           </Route>
 
           <Route path="/signup/Patient" element={<PatientOnBoard />}></Route>
@@ -93,10 +77,7 @@ const AllRoutes = () => {
               path="/Patient/Appointments"
               element={<Patient_Appointments />}
             ></Route>
-            <Route
-              path="/Patient/Doctors"
-              element={<Managedoclist />}
-            ></Route>
+            <Route path="/Patient/Doctors" element={<Managedoclist />}></Route>
             <Route
               path="/Patient/Settings"
               element={<Patient_Settings />}

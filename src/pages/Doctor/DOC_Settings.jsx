@@ -124,7 +124,7 @@ const DOC_Settings = () => {
             {isEditing ? "Cancel" : "Edit"}
           </button>
         </div>
-        <div className="bg-gray-100 min-h-screen px-6 py-8">
+        <div className="bg-gray-100 min-h-screen ">
           <div className="max-w-full mx-auto bg-white rounded-xl shadow-lg overflow-hidden transition duration-300 ease-in-out transform hover:shadow-xl">
             <div className="px-24 py-10">
               <div className="flex flex-col md:flex-row items-center">
@@ -428,7 +428,7 @@ const DOC_Settings = () => {
                 </div>
               ) : (
                 <div>
-                  <div className="mt-8">
+                  <div className="mt-10">
                     <h3 className="text-3xl font-bold text-gray-800 mb-4 pb-2 border-b-2 border-gray-200">
                       Personal Information
                     </h3>

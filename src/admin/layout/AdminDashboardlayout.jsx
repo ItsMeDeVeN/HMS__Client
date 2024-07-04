@@ -4,7 +4,7 @@ import Navbar from "../../components/Navbar";
 import { ToastContainer } from "react-toastify";
 const AdminDashboardlayout = ({ children }) => {
   return (
-    <div className="flex h-screen bg-gray-200">
+    <div className="flex min-h-screen max-h-fit bg-slate-300">
       <ToastContainer />
       <Sidebar role="Admin" />
 

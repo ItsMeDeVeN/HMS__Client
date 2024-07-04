@@ -58,8 +58,7 @@ const Patient_Appointments = () => {
   return (
     <div>
       <PatientDashboardlayout>
-        <div className="bg-gray-800 text-gray-300 shadow-md rounded mb-6 mx-2">
-          <table className="min-w-full bg-white rounded">
+          <table className="min-w-full bg-white rounded-3xl ">
             <thead className="bg-gray-800 text-gray-300">
               <tr>
                 <th className="w-1/5 py-3 px-4 uppercase font-semibold text-xl border-b border-gray-700 text-center">
@@ -84,7 +83,7 @@ const Patient_Appointments = () => {
                 appointments.map((appointment, index) => (
                   <tr
                     key={index}
-                    className="text-base border-b border-gray-400 bg-gray-300"
+                    className="text-base border-b border-gray-400 bg-white "
                   >
                     <td className="w-1/5 py-3 px-4 font-semibold text-center">
                       {appointment.docname}
@@ -145,7 +144,7 @@ const Patient_Appointments = () => {
               )}
             </tbody>
           </table>
-        </div>
+        
       </PatientDashboardlayout>
     </div>
   );

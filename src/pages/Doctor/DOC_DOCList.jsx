@@ -163,7 +163,7 @@ const DOC_DOCList = ({
                 <input
                   type="text"
                   placeholder="Search Patients... "
-                  className="w-full bg-gray-100 p-2 pl-10 border border-gray-300 rounded"
+                  className="w-full bg-gray-100 p-2 pl-10 border text-black border-gray-300 rounded"
                   onChange={(e) => {
                     onSearch(e.target.value);
                   }}

@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import profile from "./profile.jpg"; // Assuming the image is imported similarly
+import profile from "./profile (3).jpg"; // Assuming the image is imported similarly
 import { toast } from "react-toastify";
 
 const Navbar = ({ role }) => {
@@ -41,7 +41,6 @@ const Navbar = ({ role }) => {
   ];
 
   const adminLinks = [
-    { to: "/AdminDashBoard/Settings", label: "Admin Settings" },
     {
       to: "#",
       label: "Logout",
@@ -60,7 +59,7 @@ const Navbar = ({ role }) => {
   if (role === "Admin") {
     links = adminLinks;
   } else if (role === "Doctor") {
-    links = doctorLinks;
+    links = doctorLinks;  
   } else if (role === "Patient") {
     links = patientLinks;
   }

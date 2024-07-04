@@ -192,7 +192,7 @@ const Patient_DOCList = ({
             </div>
           </div>
         ) : (
-          <div className="text-gray-300 bg-slate-400 shadow-md rounded  mb-6 mx-4 ">
+          <div className="text-gray-300 bg-slate-400 shadow-md  mb-8 mx-4 ">
             <div className="flex justify-end">
               <div className="relative w-96 mt-5 mr-7">
                 <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
@@ -201,7 +201,7 @@ const Patient_DOCList = ({
                 <input
                   type="text"
                   placeholder="Search Patients... "
-                  className="w-full bg-gray-100 p-2 pl-10 border border-gray-300 rounded"
+                  className="w-full bg-gray-100 p-2 pl-10 border text-black border-gray-300 rounded"
                   onChange={(e) => {
                     onSearch(e.target.value);
                   }}

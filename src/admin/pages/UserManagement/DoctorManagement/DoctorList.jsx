@@ -21,7 +21,7 @@ const DoctorList = ({
 
   return (
     <div className="flex justify-center bg-gray-200 max-w-full mx-3">
-      <div className="bg-white rounded-lg mt-10 shadow-xl w-full">
+      <div className="bg-white rounded-lg shadow-xl w-full">
         {selectedDoctor ? (
           <div className=" pl-6 pr-10 py-10">
             <button
