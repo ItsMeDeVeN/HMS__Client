@@ -116,16 +116,6 @@ const PatientOnBoard = () => {
         <Formik
           initialValues={initialValues}
           validationSchema={validationSchema}
-          // onSubmit={(values, { setSubmitting }) => {
-          //   localStorage.setItem("details", JSON.stringify(values));
-          //   setSubmitting(true);
-          //   console.log("Submitted values:", values);
-          //   toast.success("Form submitted successfully!");
-          //   setSubmitting(false);
-          //   setTimeout(() => {
-          //     navigate("/login");
-          //   }, 3000);
-          // }}
           onSubmit={handleSubmit}
         >
           <Form className="space-y-6">
@@ -394,9 +384,6 @@ const PatientOnBoard = () => {
             <button
               className="bg-gradient-to-r from-blue-500 to-teal-500 hover:from-blue-600 hover:to-teal-600 text-white font-semibold py-2 px-4 rounded transition-colors w-full shadow-md"
               type="submit"
-              // onClick={() => {
-              //   console.log("Clicked");
-              // }}
               style={{
                 boxShadow: "0 4px 8px rgba(0, 0, 0, 0.2)",
               }}

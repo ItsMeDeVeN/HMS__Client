@@ -33,22 +33,22 @@ const Login = () => {
   const handleResponse = (status, message, res) => {
     if (status === 200) {
       toast.success(message);
-      console.log(res.data)
+      console.log(res.data);
       if (res.data.user.role === "Doctor") {
-          localStorage.setItem("Token",res.data.token)
-          localStorage.setItem("User_Id",res.data.user._id)
-          localStorage.setItem("Role",res.data.user.role)
-          localStorage.setItem("Name",res.data.user.name)
+        localStorage.setItem("Token", res.data.token);
+        localStorage.setItem("User_Id", res.data.user._id);
+        localStorage.setItem("Role", res.data.user.role);
+        localStorage.setItem("Name", res.data.user.name);
         setTimeout(() => {
-          navigate("/Doctor/DashBoard");
+          navigate("/doctor/dashBoard");
         }, 2000);
       } else if (res.data.user.role === "Patient") {
-        localStorage.setItem("Token",res.data.token)
-        localStorage.setItem("User_Id",res.data.user._id)
-        localStorage.setItem("Role",res.data.user.role)
-        localStorage.setItem("Name",res.data.user.name)
+        localStorage.setItem("Token", res.data.token);
+        localStorage.setItem("User_Id", res.data.user._id);
+        localStorage.setItem("Role", res.data.user.role);
+        localStorage.setItem("Name", res.data.user.name);
         setTimeout(() => {
-          navigate("/Patient/DashBoard");
+          navigate("/patient/dashBoard");
         }, 2000);
       }
     } else if (status === 400 || status === 403 || status === 401) {

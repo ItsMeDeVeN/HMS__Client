@@ -1,22 +1,24 @@
 import React, { useState } from "react";
-import Dashboardlayout from "../../layouts/DOCDashboardlayout";
+import PatientDashboardlayout from "../../layouts/PatientDashboardlayout";
 import { FaSearch } from "react-icons/fa";
-import profile from "../../components/profile.jpg"
+import profile from "../../components/profile.jpg";
+import Swal from "sweetalert2";
 
-const DOC_DOCList = ({
+const Patient_DOCList = ({
   data = [],
   onSearch,
   onPageChange,
   currentPage,
   totalPages,
+  bookAppointment,
 }) => {
   const [selectedDoctor, setSelectedDoctor] = useState(null);
-
-  console.log("Rendering DOC_DOCList with data:", data); // Log the data passed to DOC_DOCList
+  const patientid = localStorage.getItem("User_Id");
+  const patientname = localStorage.getItem("Name");
 
   return (
     <div>
-      <Dashboardlayout>
+      <PatientDashboardlayout>
         {selectedDoctor ? (
           <div className="p-6 bg-white rounded-lg shadow-lg">
             <button
@@ -26,7 +28,7 @@ const DOC_DOCList = ({
               Back
             </button>
             <h1 className="text-3xl font-bold mb-6 text-center text-gray-800 pb-4 border-b-2 border-gray-300">
-            {selectedDoctor.name}
+              {selectedDoctor.name}
             </h1>
             <div className="space-y-6 text-lg">
               <div className="flex items-start">
@@ -117,7 +119,7 @@ const DOC_DOCList = ({
                           Day
                         </h3>
                       </div>
-                      <div className="w-2/3">
+                      <div className="w-1/3">
                         <h3 className="text-lg font-medium text-gray-700">
                           Timing
                         </h3>
@@ -128,9 +130,41 @@ const DOC_DOCList = ({
                         <div className="w-1/3">
                           <p className="text-gray-600">{slot.day}</p>
                         </div>
-                        <div className="w-2/3">
+                        <div className="w-1/3">
                           <p className="text-gray-600">{slot.timeSlot}</p>
                         </div>
+                        <button
+                          onClick={() => {
+                            Swal.fire({
+                              title: "Are you sure you want to book this slot?",
+                              icon: "question",
+                              showCancelButton: true,
+                              confirmButtonColor: "#3085d6",
+                              cancelButtonColor: "#d33",
+                              confirmButtonText: "Book!",
+                            }).then((result) => {
+                              if (result.isConfirmed) {
+                                const appointmentData = {
+                                  docid: selectedDoctor._id,
+                                  docname: selectedDoctor.name,
+                                  patientid: patientid,
+                                  patientname: patientname,
+                                  slotid: slot._id, // Assuming each slot has a unique ID
+                                  docdepartment: selectedDoctor.department,
+                                  appointmentstatus: false,
+                                  slot: {
+                                    day: slot.day,
+                                    timeSlot: slot.timeSlot,
+                                  },
+                                };
+                                bookAppointment(appointmentData);
+                              }
+                            });
+                          }}
+                          className="w-fit ml-auto mr-96 bg-green-500 text-white py-1 px-3 rounded-lg shadow-md hover:bg-green-700 hover:shadow-lg "
+                        >
+                          Book
+                        </button>
                       </div>
                     ))}
                   </>
@@ -154,9 +188,9 @@ const DOC_DOCList = ({
             </div>
           </div>
         ) : (
-          <div className="text-gray-300 bg-slate-400 shadow-md rounded  mb-6 mx-4 ">
+          <div className="text-gray-300 bg-slate-400 shadow-md  mb-8 mx-4 ">
             <div className="flex justify-end">
-            <div className="relative w-96 mt-5 mr-7">
+              <div className="relative w-96 mt-5 mr-7">
                 <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
                   <FaSearch className="text-gray-500" />
                 </div>
@@ -173,38 +207,42 @@ const DOC_DOCList = ({
             {data.length > 0 ? (
               <div className="grid grid-cols-3 gap-4 m-6 ">
                 {data.map((doctor) => (
-              <div
-                key={doctor._id}
-                className="p-6 bg-white cursor-pointer rounded-lg shadow-md flex flex-col justify-between hover:bg-gray-200 hover:shadow-lg transition-transform transform hover:-translate-y-1"
-              >
-                <div>
-                  <div className="flex items-center justify-between mb-4">
+                  <div
+                    key={doctor._id}
+                    className="p-6 bg-white cursor-pointer rounded-lg shadow-md flex flex-col justify-between hover:bg-gray-200 hover:shadow-lg transition-transform transform hover:-translate-y-1"
+                  >
                     <div>
-                      <h3
-                        onClick={() => setSelectedDoctor(doctor)}
-                        className="text-xl underline font-bold text-gray-800 cursor-pointer"
-                      >
-                        {doctor.name}
-                      </h3>
-                      <p className="text-gray-600 pt-2">{doctor.email}</p>
-                      <p className="text-gray-600">{doctor.contact}</p>
-                      <p className="text-gray-600">{doctor.department}</p>
-                    </div>
-                    <div className="w-28 h-28 overflow-hidden rounded-full">
-                      <img src={profile} alt="Profile" className="object-cover w-full h-full" />
+                      <div className="flex items-center justify-between mb-4">
+                        <div>
+                          <h3
+                            onClick={() => setSelectedDoctor(doctor)}
+                            className="text-xl underline font-bold text-gray-800 cursor-pointer"
+                          >
+                            {doctor.name}
+                          </h3>
+                          <p className="text-gray-600 pt-2">{doctor.email}</p>
+                          <p className="text-gray-600">{doctor.contact}</p>
+                          <p className="text-gray-600">{doctor.department}</p>
+                        </div>
+                        <div className="w-28 h-28 overflow-hidden rounded-full">
+                          <img
+                            src={profile}
+                            alt="Profile"
+                            className="object-cover w-full h-full"
+                          />
+                        </div>
+                      </div>
+                      <div className="mt-auto">
+                        <button
+                          onClick={() => setSelectedDoctor(doctor)}
+                          className="bg-blue-500 text-white py-2 px-4 rounded-lg shadow-md hover:bg-blue-700 hover:shadow-lg transition-transform transform hover:-translate-y-1 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50"
+                        >
+                          View
+                        </button>
+                      </div>
                     </div>
                   </div>
-                  <div className="mt-auto">
-                    <button
-                      onClick={() => setSelectedDoctor(doctor)}
-                      className="bg-blue-500 text-white py-2 px-4 rounded-lg shadow-md hover:bg-blue-700 hover:shadow-lg transition-transform transform hover:-translate-y-1 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50"
-                    >
-                      View
-                    </button>
-                  </div>
-                </div>
-              </div>
-            ))}
+                ))}
               </div>
             ) : (
               <div className="text-gray-600 p-6">No doctors found.</div>
@@ -244,9 +282,9 @@ const DOC_DOCList = ({
             </div>
           </div>
         )}
-      </Dashboardlayout>
+      </PatientDashboardlayout>
     </div>
   );
 };
 
-export default DOC_DOCList;
+export default Patient_DOCList;

@@ -13,13 +13,18 @@ const ForgotPassword = () => {
   const handleSubmit = async (values) => {
     try {
       setSubmitting(true);
-      const res = await axios.post("http://localhost:3000/api/forgotpassword", values);
+      const res = await axios.post(
+        "http://localhost:3000/api/forgotpassword",
+        values
+      );
       console.log(res);
       handleResponse(res.status, res.data.message);
     } catch (e) {
       console.log(e);
       const status = e.response ? e.response.status : 500;
-      const message = e.response ? e.response.data.message : "An error occurred";
+      const message = e.response
+        ? e.response.data.message
+        : "An error occurred";
       handleResponse(status, message);
     } finally {
       setSubmitting(false);
@@ -52,8 +57,12 @@ const ForgotPassword = () => {
             confirmnewpassword: "",
           }}
           validationSchema={Yup.object({
-            email: Yup.string().email("Invalid email address").required("Required"),
-            newpassword: Yup.string().required("Required").min(6, "Password must be at least 6 characters"),
+            email: Yup.string()
+              .email("Invalid email address")
+              .required("Required"),
+            newpassword: Yup.string()
+              .required("Required")
+              .min(6, "Password must be at least 6 characters"),
             confirmnewpassword: Yup.string()
               .oneOf([Yup.ref("newpassword"), null], "Passwords must match")
               .required("Required"),
@@ -71,10 +80,17 @@ const ForgotPassword = () => {
                 className="border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400 transition-shadow"
                 placeholder="example@example.com"
               />
-              <ErrorMessage name="email" component="div" className="text-red-500 text-sm" />
+              <ErrorMessage
+                name="email"
+                component="div"
+                className="text-red-500 text-sm"
+              />
             </div>
             <div className="flex flex-col">
-              <label htmlFor="newpassword" className="font-semibold text-gray-700">
+              <label
+                htmlFor="newpassword"
+                className="font-semibold text-gray-700"
+              >
                 New Password
               </label>
               <Field
@@ -83,10 +99,17 @@ const ForgotPassword = () => {
                 className="border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400 transition-shadow"
                 placeholder="********"
               />
-              <ErrorMessage name="newpassword" component="div" className="text-red-500 text-sm" />
+              <ErrorMessage
+                name="newpassword"
+                component="div"
+                className="text-red-500 text-sm"
+              />
             </div>
             <div className="flex flex-col">
-              <label htmlFor="confirmnewpassword" className="font-semibold text-gray-700">
+              <label
+                htmlFor="confirmnewpassword"
+                className="font-semibold text-gray-700"
+              >
                 Confirm New Password
               </label>
               <Field
@@ -95,10 +118,16 @@ const ForgotPassword = () => {
                 className="border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400 transition-shadow"
                 placeholder="********"
               />
-              <ErrorMessage name="confirmnewpassword" component="div" className="text-red-500 text-sm" />
+              <ErrorMessage
+                name="confirmnewpassword"
+                component="div"
+                className="text-red-500 text-sm"
+              />
             </div>
             <button
-              className={`bg-gradient-to-r from-blue-700 to-teal-500 hover:from-blue-600 hover:to-teal-600 text-white font-semibold py-2 px-4 rounded transition-colors w-full ${submitting ? "opacity-50 cursor-not-allowed" : ""}`}
+              className={`bg-gradient-to-r from-blue-700 to-teal-500 hover:from-blue-600 hover:to-teal-600 text-white font-semibold py-2 px-4 rounded transition-colors w-full ${
+                submitting ? "opacity-50 cursor-not-allowed" : ""
+              }`}
               type="submit"
               disabled={submitting}
             >

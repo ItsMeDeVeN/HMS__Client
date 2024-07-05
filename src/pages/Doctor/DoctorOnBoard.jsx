@@ -11,21 +11,13 @@ import axios from "axios";
 const DoctorOnBoard = () => {
   const navigate = useNavigate();
   const [availability, setAvailability] = useState([]);
-  // const [educationalQualificationFile, setEducationalQualificationFile] =
-  useState(null);
+
   const [submitting, setSubmitting] = useState(false);
 
   const handleSubmit = async (values) => {
     try {
       values.availability = availability;
       setSubmitting(true);
-
-      // Append the educationalQualificationFile to the form data
-      // const formData = new FormData();
-      // formData.append("educationalQualification", educationalQualificationFile);
-      // Object.keys(values).forEach((key) => {
-      //   formData.append(key, values[key]);
-      // });
 
       const res = await axios.post(
         "http://localhost:3000/api/registerdoctor",
@@ -68,7 +60,6 @@ const DoctorOnBoard = () => {
     address: "",
     day: "",
     timeSlot: "",
-    // educationalQualification: null,
   };
 
   const validationSchema = Yup.object({
@@ -97,16 +88,7 @@ const DoctorOnBoard = () => {
     address: Yup.string().required("Address is Required!!!"),
     day: Yup.string(),
     timeSlot: Yup.string(),
-    // educationalQualification: Yup.mixed().required(
-    //   "Educational Qualification is Required"
-    // ),
   });
-
-  // const handleFileChange = (event, setFieldValue) => {
-  //   const file = event.currentTarget.files[0];
-  //   setFieldValue("educationalQualification", file);
-  //   setEducationalQualificationFile(file);
-  // };
 
   const addAvailability = (values, setFieldValue) => {
     const newAvailability = [
@@ -471,30 +453,6 @@ const DoctorOnBoard = () => {
                   className="text-red-500 text-sm"
                 />
               </div>
-              {/* <div className="flex flex-col mb-4">
-                <label
-                  htmlFor="educationalQualification"
-                  className="font-semibold text-gray-700"
-                  style={{
-                    textShadow: "1px 1px 1px rgba(0, 0, 0, 0.1)",
-                  }}
-                >
-                  Educational Qualification (PDF)
-                </label>
-                <input
-                  type="file"
-                  id="educationalQualification"
-                  name="educationalQualification"
-                  accept=".pdf"
-                  onChange={(event) => handleFileChange(event, setFieldValue)}
-                  className="border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400 transition-shadow"
-                />
-                <ErrorMessage
-                  name="educationalQualification"
-                  component="div"
-                  className="text-red-500 text-sm"
-                />
-              </div> */}
               <button
                 className="bg-gradient-to-r from-blue-500 to-teal-500 hover:from-blue-600 hover:to-teal-600 text-white font-semibold py-2 px-4 rounded transition-colors w-full shadow-md"
                 type="submit"

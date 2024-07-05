@@ -1,10 +1,11 @@
-import React, { useEffect, useState } from 'react';
-import Patient_DOCList from './Patient_DOCList';
-import { useImmer } from 'use-immer';
-import { useDebounce } from 'use-debounce';
-import axios from 'axios';
-import { toast } from 'react-toastify';
-import Swal from 'sweetalert2';
+import React, { useEffect, useState } from "react";
+import PatientDoctors from "./PatientDoctors";
+import { useImmer } from "use-immer";
+import { useDebounce } from "use-debounce";
+import axios from "axios";
+import { toast } from "react-toastify";
+import Swal from "sweetalert2";
+import { ColorRing } from "react-loader-spinner"; // Import ColorRing loader
 
 const Managedoclist = () => {
   const [data, setData] = useState([]);
@@ -57,12 +58,15 @@ const Managedoclist = () => {
 
   const bookAppointment = async (appointmentData) => {
     try {
-      const res = await axios.post("http://localhost:3000/api/bookappointment", appointmentData);
+      const res = await axios.post(
+        "http://localhost:3000/api/bookappointment",
+        appointmentData
+      );
       if (res.status === 200) {
         Swal.fire({
           title: "Booked!",
           text: "Your appointment request has been placed.",
-          icon: "success"
+          icon: "success",
         });
       }
     } catch (error) {
@@ -70,7 +74,10 @@ const Managedoclist = () => {
         if (error.response.status === 409) {
           toast.error("Appointment already exists!");
         } else {
-          toast.error(error.response.data.message || "An error occurred while booking the appointment.");
+          toast.error(
+            error.response.data.message ||
+              "An error occurred while booking the appointment."
+          );
         }
       } else {
         console.error("Error booking appointment:", error);
@@ -80,14 +87,17 @@ const Managedoclist = () => {
   };
 
   return (
-    <Patient_DOCList
-      data={data}
-      onSearch={onSearch}
-      onPageChange={onPageChange}
-      currentPage={filterData.page}
-      totalPages={totalPages}
-      bookAppointment={bookAppointment}
-    />
+    <>
+    
+        <PatientDoctors
+          data={data}
+          onSearch={onSearch}
+          onPageChange={onPageChange}
+          currentPage={filterData.page}
+          totalPages={totalPages}
+          bookAppointment={bookAppointment}
+        />
+    </>
   );
 };
 

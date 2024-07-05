@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import AdminDashboardlayout from "../layout/AdminDashboardlayout";
 import axios from "axios";
 import { PieChart, Pie, Tooltip, Legend, Cell } from "recharts";
+import { ColorRing } from "react-loader-spinner";
 
 // const details = "Admin  :)";
 const name = localStorage.getItem("Name");
@@ -41,48 +42,39 @@ const AdminDashboard = () => {
   const COLORS = ["#096b00", "#eb280b"];
   const COLORS2 = ["#28a745", "#6c757d"];
   const COLORS3 = ["#ff7f0e", "#8c564b"];
-  console.log(data)
+  console.log(data);
   return (
     <div className="bg-slate-800">
       <AdminDashboardlayout>
-
         <div className="py-6 px-8 bg-cyan-900 text-yellow-200 text-3xl font-semibold rounded-md shadow-lg flex items-center justify-center">
           Welcome to HMS {name}
         </div>
 
-        <h1 className="font-bold text-4xl px-4 py-4 text-black flex justify-center underline decoration-solid ">Patients</h1>
-        <div className="px-4 py-4 mt-4 flex ">
-          <div className="ml-52">
-            
-            <div className="bg-white rounded-3xl w-full p-6 mb-4">
-              <div className="text-xl font-semibold mb-2 w-56">
-                Total Patients:
-              </div>
+        <div className="grid grid-cols-6 gap-10 mt-20">
+          <div className="w-fit ml-5">
+            <div className="bg-white rounded-lg w-fit p-6 mb-4 col-span-1">
+              <div className="text-xl font-semibold mb-2">Patients:</div>
               <div className="text-2xl">{data.allpatients || 0}</div>
             </div>
-            <div className="bg-white rounded-3xl p-6 w-full mb-4 ">
-              <div className="text-xl font-semibold mb-2 ">
-                Active Patients:
-              </div>
+            <div className="bg-white rounded-lg p-6 w-full mb-4 text-green-700">
+              <div className="text-xl font-semibold mb-2">Active:</div>
               <div className="text-2xl">{data.activepatients || 0}</div>
             </div>
-            <div className="bg-white rounded-3xl p-6 mb-4 w-full">
-              <div className="text-xl font-semibold mb-2 ">
-              Ina ctive Patients:
-              </div>
+            <div className="bg-white rounded-lg p-6 mb-4 w-full text-red-700">
+              <div className="text-xl font-semibold mb-2">Inactive:</div>
               <div className="text-2xl">{data.inactivepatients || 0}</div>
             </div>
           </div>
 
-          <div className="flex justify-enditems-center ml-52 bg-white rounded-3xl">
+          <div className="bg-white rounded-xl w-fit h-fit col-span-1">
             {Object.keys(data).length > 0 ? (
-              <PieChart width={400} height={400}>
+              <PieChart width={350} height={380}>
                 <Pie
                   data={chartData2}
                   dataKey="value"
                   cx="50%"
-                  cy="45%"
-                  outerRadius={120}
+                  cy="50%"
+                  outerRadius={100}
                   label
                 >
                   {chartData2.map((entry, index) => (
@@ -96,45 +88,42 @@ const AdminDashboard = () => {
                 <Legend />
               </PieChart>
             ) : (
-              <div>Loading...</div>
+              <ColorRing
+                visible={true}
+                height="80"
+                width="80"
+                ariaLabel="color-ring-loading"
+                wrapperStyle={{}}
+                wrapperClass="color-ring-wrapper"
+                colors={["#e15b64", "#f47e60", "#f8b26a", "#abbd81", "#849b87"]}
+              />
             )}
           </div>
-        </div>
 
-
-        <h1 className="font-bold text-4xl px-4 py-4 text-black flex justify-center underline decoration-solid mt-4 ">Appointments</h1>
-        <div className="px-4 py-4 mt-4 flex ">
-          <div className="ml-52">
-            
-            <div className="bg-white rounded-3xl w-full p-6 mb-4">
-              <div className="text-xl font-semibold mb-2">
-                Total Appointments:
-              </div>
+          <div className="w-fit ml-48">
+            <div className="bg-white rounded-lg w-fit p-6 mb-4 col-span-1">
+              <div className="text-xl font-semibold mb-2">Appointments:</div>
               <div className="text-2xl">{data.allappointments || 0}</div>
             </div>
-            <div className="bg-white rounded-3xl p-6 w-full mb-4 ">
-              <div className="text-xl font-semibold mb-2 ">
-                Approved Appointments:
-              </div>
+            <div className="bg-white rounded-lg p-6 w-full text-green-600 mb-4 ">
+              <div className="text-xl font-semibold mb-2 ">Approved:</div>
               <div className="text-2xl">{data.approvedappointments || 0}</div>
             </div>
-            <div className="bg-white rounded-3xl p-6 mb-4 w-full">
-              <div className="text-xl font-semibold mb-2 ">
-                Pending Appointments:
-              </div>
+            <div className="bg-white rounded-lg p-6 mb-4 w-full text-red-600">
+              <div className="text-xl font-semibold mb-2">Pending:</div>
               <div className="text-2xl">{data.pendingappointments || 0}</div>
             </div>
           </div>
 
-          <div className="flex justify-enditems-center ml-52 bg-white rounded-3xl">
+          <div className="bg-white rounded-xl w-fit h-fit col-span-1 ml-52">
             {Object.keys(data).length > 0 ? (
-              <PieChart width={400} height={400}>
+              <PieChart width={350} height={380}>
                 <Pie
                   data={chartData}
                   dataKey="value"
                   cx="50%"
-                  cy="45%"
-                  outerRadius={120}
+                  cy="50%"
+                  outerRadius={100}
                   label
                 >
                   {chartData.map((entry, index) => (
@@ -148,48 +137,47 @@ const AdminDashboard = () => {
                 <Legend />
               </PieChart>
             ) : (
-              <div>Loading...</div>
+              <ColorRing
+                visible={true}
+                height="80"
+                width="80"
+                ariaLabel="color-ring-loading"
+                wrapperStyle={{}}
+                wrapperClass="color-ring-wrapper"
+                colors={["#e15b64", "#f47e60", "#f8b26a", "#abbd81", "#849b87"]}
+              />
             )}
           </div>
         </div>
 
-
-        <h1 className="font-bold text-4xl px-4 py-4 text-black flex justify-center underline decoration-solid mt-4 ">Doctors</h1>
-        <div className="px-4 py-4 mt-4 flex ">
-          <div className="ml-52">
-            
-            <div className="bg-white rounded-3xl w-full p-6 mb-4">
-              <div className="text-xl font-semibold mb-2 w-56">
-                Total Doctors:
-              </div>
+        <div className="grid grid-cols-6 gap-10 mt-40">
+          <div className="w-fit ml-5">
+            <div className="bg-white rounded-lg w-full p-6 mb-4 col-span-1">
+              <div className="text-xl font-semibold mb-2">Doctors:</div>
               <div className="text-2xl">{data.alldocs || 0}</div>
             </div>
-            <div className="bg-white rounded-3xl p-6 w-full mb-4 ">
-              <div className="text-xl font-semibold mb-2 ">
-                Verified Doctors:
-              </div>
+            <div className="bg-white rounded-lg p-6 w-full mb-4 text-yellow-600 ">
+              <div className="text-xl font-semibold mb-2">Verified:</div>
               <div className="text-2xl">{data.verifiedocs || 0}</div>
             </div>
-            <div className="bg-white rounded-3xl p-6 mb-4 w-full">
-              <div className="text-xl font-semibold mb-2 ">
-              Unverified Doctors:
-              </div>
+            <div className="bg-white rounded-lg p-6 mb-4 w-fit text-amber-900">
+              <div className="text-xl font-semibold mb-2">Unverified:</div>
               <div className="text-2xl">{data.unverifiedocs || 0}</div>
             </div>
           </div>
 
-          <div className="flex justify-enditems-center ml-52 bg-white rounded-3xl">
+          <div className="bg-white rounded-xl w-fit h-fit col-span-1 ml-5">
             {Object.keys(data).length > 0 ? (
-              <PieChart width={400} height={400}>
+              <PieChart width={350} height={380}>
                 <Pie
                   data={chartData3_1}
                   dataKey="value"
                   cx="50%"
-                  cy="45%"
+                  cy="50%"
                   outerRadius={60}
                   label
                 >
-                  {chartData.map((entry, index) => (
+                  {chartData3_1.map((entry, index) => (
                     <Cell
                       key={`cell-${index}`}
                       fill={COLORS3[index % COLORS3.length]}
@@ -200,12 +188,12 @@ const AdminDashboard = () => {
                   data={chartData3_2}
                   dataKey="value"
                   cx="50%"
-                  cy="45%"
+                  cy="50%"
                   innerRadius={100}
                   outerRadius={120}
                   label
                 >
-                  {chartData.map((entry, index) => (
+                  {chartData3_2.map((entry, index) => (
                     <Cell
                       key={`cell-${index}`}
                       fill={COLORS2[index % COLORS2.length]}
@@ -216,7 +204,15 @@ const AdminDashboard = () => {
                 <Legend />
               </PieChart>
             ) : (
-              <div>Loading...</div>
+              <ColorRing
+                visible={true}
+                height="80"
+                width="80"
+                ariaLabel="color-ring-loading"
+                wrapperStyle={{}}
+                wrapperClass="color-ring-wrapper"
+                colors={["#e15b64", "#f47e60", "#f8b26a", "#abbd81", "#849b87"]}
+              />
             )}
           </div>
         </div>

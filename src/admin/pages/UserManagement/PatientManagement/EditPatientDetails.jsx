@@ -274,8 +274,6 @@ const EditPatientDetails = ({ patientId, onClose, onUpdate }) => {
                 />
               </div>
 
-             
-
               {/* Buttons */}
               <div className="flex justify-end">
                 <button

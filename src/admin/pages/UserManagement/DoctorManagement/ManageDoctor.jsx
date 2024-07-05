@@ -4,14 +4,16 @@ import { useDebounce } from "use-debounce";
 import DoctorList from "./DoctorList";
 import axios from "axios";
 import AdminDashboardlayout from "../../../layout/AdminDashboardlayout";
-import EditDOCDetails from "./EditDOCDetails"; // Import the EditDoctorForm
+import EditDOCDetails from "./EditDOCDetails";
 import { toast, ToastContainer } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css"; // Ensure you import the CSS for react-toastify
+import "react-toastify/dist/ReactToastify.css";
+import { ColorRing } from "react-loader-spinner";
 
 const ManageDoctor = () => {
   const [data, setData] = useState([]);
   const [selectedDoctorId, setSelectedDoctorId] = useState(null);
   const [totalPages, settotalPages] = useState(null);
+  const [loading, setLoading] = useState(false); // Add loading state
   const [filterData, setFilterData] = useImmer({
     page: 1,
     pageSize: 4,
@@ -22,6 +24,7 @@ const ManageDoctor = () => {
   const [debouncedSearchText] = useDebounce(searchText, 500);
 
   const fetchData = async () => {
+    setLoading(true); // Set loading to true
     try {
       const res = await axios.get(
         `http://localhost:3000/api/alldoctors?page=${filterData?.page}&limit=${filterData?.pageSize}&search=${filterData?.searchText}`
@@ -33,6 +36,8 @@ const ManageDoctor = () => {
     } catch (e) {
       console.error("Error fetching data:", e);
       toast.error("Failed to fetch data.");
+    } finally {
+      setLoading(false); // Set loading to false
     }
   };
 
@@ -109,23 +114,39 @@ const ManageDoctor = () => {
 
   return (
     <AdminDashboardlayout>
-      <DoctorList
-        data={data}
-        onVerify={onVerify}
-        onDelete={onDelete}
-        onEdit={onEdit}
-        onSearch={onSearch}
-        onPageChange={onPageChange}
-        onActivation={onActivation}
-        currentPage={filterData.page}
-        totalPages={totalPages}
-      />
-      {selectedDoctorId && (
-        <EditDOCDetails
-          doctorId={selectedDoctorId}
-          onClose={handleCloseEditForm}
-          onUpdate={fetchData} // Refresh data after update
-        />
+      {loading ? (
+        <div className="flex justify-center items-center h-full">
+          <ColorRing
+            visible={true}
+            height={80}
+            width={80}
+            ariaLabel="blocks-loading"
+            wrapperStyle={{}}
+            wrapperClass="blocks-wrapper"
+            colors={["#e15b64", "#f47e60", "#f8b26a", "#abbd81", "#849b87"]}
+          />
+        </div>
+      ) : (
+        <>
+          <DoctorList
+            data={data}
+            onVerify={onVerify}
+            onDelete={onDelete}
+            onEdit={onEdit}
+            onSearch={onSearch}
+            onPageChange={onPageChange}
+            onActivation={onActivation}
+            currentPage={filterData.page}
+            totalPages={totalPages}
+          />
+          {selectedDoctorId && (
+            <EditDOCDetails
+              doctorId={selectedDoctorId}
+              onClose={handleCloseEditForm}
+              onUpdate={fetchData} // Refresh data after update
+            />
+          )}
+        </>
       )}
       <ToastContainer />
     </AdminDashboardlayout>

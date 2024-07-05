@@ -1,25 +1,22 @@
 import React, { useState } from "react";
-import PatientDashboardlayout from "../../layouts/PatientDashboardlayout";
+import Dashboardlayout from "../../layouts/DOCDashboardlayout";
 import { FaSearch } from "react-icons/fa";
 import profile from "../../components/profile.jpg"
-import Swal from "sweetalert2";
 
-
-const Patient_DOCList = ({
+const DoctorDoctors = ({
   data = [],
   onSearch,
   onPageChange,
   currentPage,
   totalPages,
-  bookAppointment,
 }) => {
   const [selectedDoctor, setSelectedDoctor] = useState(null);
-  const patientid = localStorage.getItem("User_Id");
-  const patientname = localStorage.getItem("Name")
+
+  console.log("Rendering DOC_DOCList with data:", data); // Log the data passed to DOC_DOCList
 
   return (
     <div>
-      <PatientDashboardlayout>
+      <Dashboardlayout>
         {selectedDoctor ? (
           <div className="p-6 bg-white rounded-lg shadow-lg">
             <button
@@ -29,7 +26,7 @@ const Patient_DOCList = ({
               Back
             </button>
             <h1 className="text-3xl font-bold mb-6 text-center text-gray-800 pb-4 border-b-2 border-gray-300">
-              {selectedDoctor.name}
+            {selectedDoctor.name}
             </h1>
             <div className="space-y-6 text-lg">
               <div className="flex items-start">
@@ -120,7 +117,7 @@ const Patient_DOCList = ({
                           Day
                         </h3>
                       </div>
-                      <div className="w-1/3">
+                      <div className="w-2/3">
                         <h3 className="text-lg font-medium text-gray-700">
                           Timing
                         </h3>
@@ -131,44 +128,9 @@ const Patient_DOCList = ({
                         <div className="w-1/3">
                           <p className="text-gray-600">{slot.day}</p>
                         </div>
-                        <div className="w-fit">
+                        <div className="w-2/3">
                           <p className="text-gray-600">{slot.timeSlot}</p>
                         </div>
-                        <button
-                          onClick={() => {
-                            Swal.fire({
-                              title: "Are you sure you want to book this slot?",
-                              icon: "question",
-                              showCancelButton: true,
-                              confirmButtonColor: "#3085d6",
-                              cancelButtonColor: "#d33",
-                              confirmButtonText: "Book!"
-                            }).then((result) => {
-                              if (result.isConfirmed) {
-                                const appointmentData = {
-                                  docid: selectedDoctor._id,
-                                  docname: selectedDoctor.name,
-                                  patientid: patientid,
-                                  patientname: patientname,
-                                  slotid: slot._id, // Assuming each slot has a unique ID
-                                  docdepartment: selectedDoctor.department,
-                                  appointmentstatus: false,
-                                  slot: {
-                                    day: slot.day,
-                                    timeSlot: slot.timeSlot,
-                                  },
-                                };
-                                bookAppointment(appointmentData);
-                                
-                              }
-                            });
-                            
-                          }}
-                          className="w-fit ml-auto mr-96 bg-green-500 text-white py-1 px-3 rounded-lg shadow-md hover:bg-green-700 hover:shadow-lg "
-                        >
-                          Book
-                        </button>
-                        
                       </div>
                     ))}
                   </>
@@ -192,9 +154,9 @@ const Patient_DOCList = ({
             </div>
           </div>
         ) : (
-          <div className="text-gray-300 bg-slate-400 shadow-md  mb-8 mx-4 ">
+          <div className="text-gray-300 bg-slate-400 shadow-md rounded  mb-6 mx-4 ">
             <div className="flex justify-end">
-              <div className="relative w-96 mt-5 mr-7">
+            <div className="relative w-96 mt-5 mr-7">
                 <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
                   <FaSearch className="text-gray-500" />
                 </div>
@@ -282,9 +244,9 @@ const Patient_DOCList = ({
             </div>
           </div>
         )}
-      </PatientDashboardlayout>
+      </Dashboardlayout>
     </div>
   );
 };
 
-export default Patient_DOCList;
+export default DoctorDoctors;

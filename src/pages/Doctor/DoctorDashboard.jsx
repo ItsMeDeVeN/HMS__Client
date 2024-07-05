@@ -1,16 +1,16 @@
 import React, { useEffect, useState } from "react";
 import Dashboardlayout from "../../layouts/DOCDashboardlayout";
-import { PieChart, Pie, Tooltip,Legend, Cell } from "recharts";
+import { PieChart, Pie, Tooltip, Legend, Cell } from "recharts";
 import axios from "axios";
-
+import Loader, { ColorRing } from "react-loader-spinner"; // Import Loader from react-loader-spinner
 
 const DoctorDashboard = () => {
   const [data, setData] = useState({});
+  const [loading, setLoading] = useState(true); // State to manage loading state
   const name = localStorage.getItem("Name");
   const id = localStorage.getItem("User_Id");
   const role = localStorage.getItem("Role");
-    
-  
+
   const fetchAppointmentStats = async () => {
     try {
       const res = await axios.post(
@@ -23,6 +23,8 @@ const DoctorDashboard = () => {
       setData(res.data);
     } catch (e) {
       console.error("Error fetching appointment details:", e);
+    } finally {
+      setLoading(false); // Set loading to false after fetching data
     }
   };
 
@@ -30,22 +32,19 @@ const DoctorDashboard = () => {
     fetchAppointmentStats();
   }, []);
 
-
   const chartData = [
     { name: "Approved", value: data.approvedappointment || 0 },
     { name: "Pending", value: data.pendingappointment || 0 },
   ];
 
   const COLORS = ["#096b00", "#eb280b"];
+
   return (
     <div className="bg-slate-800">
       <Dashboardlayout>
-      
-
-        <div className="py-6 px-8 bg-gray-800 text-yellow-200 text-3xl font-semibold rounded-md shadow-lg flex items-center justify-center ">
+        <div className="py-6 px-8 bg-gray-800 text-yellow-200 text-3xl font-semibold rounded-md shadow-lg flex items-center justify-center">
           Welcome to HMS {name}
         </div>
-        <h1 className="font-bold text-4xl px-4 py-4 text-black flex justify-center underline decoration-solid ">APPOINTMENTS</h1>
         <div className="px-4 py-4 mt-4 flex">
           <div className="ml-48">
             <div className="bg-white rounded-3xl w-full p-6 mb-4">
@@ -54,13 +53,13 @@ const DoctorDashboard = () => {
               </div>
               <div className="text-2xl">{data.totalappointment || 0}</div>
             </div>
-            <div className="bg-white rounded-3xl p-6 w-full mb-4 ">
+            <div className="bg-white rounded-3xl p-6 w-full mb-4 text-green-700">
               <div className="text-xl font-semibold mb-2 ">
                 Approved Appointments:
               </div>
               <div className="text-2xl">{data.approvedappointment || 0}</div>
             </div>
-            <div className="bg-white rounded-3xl p-6 mb-4 w-full">
+            <div className="bg-white rounded-3xl p-6 mb-4 w-full text-red-700">
               <div className="text-xl font-semibold mb-2 ">
                 Pending Appointments:
               </div>
@@ -68,14 +67,32 @@ const DoctorDashboard = () => {
             </div>
           </div>
 
-          <div className="flex justify-enditems-center ml-52 bg-white rounded-3xl">
-            {Object.keys(data).length > 0 ? (
+          <div className="flex justify-center items-center ml-52 bg-white rounded-3xl relative">
+            {loading ? (
+              <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
+                <ColorRing
+                  visible={true}
+                  height="80"
+                  width="80"
+                  ariaLabel="color-ring-loading"
+                  wrapperStyle={{}}
+                  wrapperClass="color-ring-wrapper"
+                  colors={[
+                    "#e15b64",
+                    "#f47e60",
+                    "#f8b26a",
+                    "#abbd81",
+                    "#849b87",
+                  ]}
+                />
+              </div>
+            ) : (
               <PieChart width={400} height={400}>
                 <Pie
                   data={chartData}
                   dataKey="value"
                   cx="50%"
-                  cy="45%"
+                  cy="50%"
                   outerRadius={120}
                   label
                 >
@@ -89,13 +106,9 @@ const DoctorDashboard = () => {
                 <Tooltip />
                 <Legend />
               </PieChart>
-            ) : (
-              <div>Loading...</div>
             )}
           </div>
         </div>
-
-        
       </Dashboardlayout>
     </div>
   );

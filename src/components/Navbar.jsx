@@ -11,7 +11,7 @@ const Navbar = ({ role }) => {
   };
 
   const patientLinks = [
-    { to: "/PatientDashBoard/Settings", label: "Profile Settings" },
+    { to: "/patient/settings", label: "Profile Settings" },
     {
       to: "#",
       label: "Logout",
@@ -27,16 +27,18 @@ const Navbar = ({ role }) => {
   ];
 
   const doctorLinks = [
-    { to: "/DoctorDashBoard/Settings", label: "Profile Settings" },
+    { to: "/doctor/settings", label: "Profile Settings" },
     {
       to: "#",
       label: "Logout",
-      action: () => {toast.success("Logged Out Successfully!!!");
+      action: () => {
+        toast.success("Logged Out Successfully!!!");
         localStorage.removeItem("Token");
         localStorage.removeItem("User_Id");
         setTimeout(() => {
           navigate("/login");
-        }, 2000);},
+        }, 2000);
+      },
     },
   ];
 
@@ -59,14 +61,21 @@ const Navbar = ({ role }) => {
   if (role === "Admin") {
     links = adminLinks;
   } else if (role === "Doctor") {
-    links = doctorLinks;  
+    links = doctorLinks;
   } else if (role === "Patient") {
     links = patientLinks;
   }
 
   return (
     <div className="flex justify-between items-center p-4 h-20 ml-0 bg-gray-300 text-white shadow-lg">
-      <h1 onClick={() => {navigate('/');}}className="text-3xl font-bold text-black cursor-pointer">HMS</h1>
+      <h1
+        onClick={() => {
+          navigate("/");
+        }}
+        className="text-3xl font-bold text-black cursor-pointer hover: transform hover:scale-105 transition"
+      >
+        HMS
+      </h1>
       <div className="relative">
         <img
           src={profile}

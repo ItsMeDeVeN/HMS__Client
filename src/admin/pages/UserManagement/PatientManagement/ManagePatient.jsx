@@ -6,14 +6,16 @@ import { useDebounce } from "use-debounce";
 import AdminDashboardlayout from "../../../layout/AdminDashboardlayout";
 import { toast, ToastContainer } from "react-toastify";
 import EditPatientDetails from "./EditPatientDetails";
+import { ColorRing } from "react-loader-spinner"; // Import ColorRing loader
 
 const ManagePatient = () => {
   const [data, setData] = useState([]);
   const [selectedPatientId, setSelectedPatientId] = useState(null);
   const [totalPages, settotalPages] = useState(null);
+  const [loading, setLoading] = useState(false); // Add loading state
   const [filterData, setFilterData] = useImmer({
     page: 1,
-    pageSize: 3,
+    pageSize: 4,
     searchText: "",
   });
   const [searchText, setSearchText] = useState("");
@@ -21,19 +23,20 @@ const ManagePatient = () => {
   const [debouncedSearchText] = useDebounce(searchText, 500);
 
   const fetchData = async () => {
+    setLoading(true); // Set loading to true
     try {
       const res = await axios.get(
         `http://localhost:3000/api/allpatients?page=${filterData?.page}&limit=${filterData?.pageSize}&search=${filterData?.searchText}`
       );
       if (res.status === 200) {
         setData(res.data.patients);
-        // console.log(res.data)
         settotalPages(res.data.totalPages);
-        // console.log("Total Patients ==>",res.data.patients.length);
       }
     } catch (e) {
       console.error("Error fetching data:", e);
       toast.error("Failed to fetch data.");
+    } finally {
+      setLoading(false); // Set loading to false
     }
   };
 
@@ -96,22 +99,38 @@ const ManagePatient = () => {
 
   return (
     <AdminDashboardlayout>
-      <PatientList
-        data={data}
-        onDelete={onDelete}
-        onEdit={onEdit}
-        onSearch={onSearch}
-        onPageChange={onPageChange}
-        onActivation={onActivation}
-        currentPage={filterData.page} // Pass current page to DoctorList
-        totalPages={totalPages} // Calculate total pages
-      />
-      {selectedPatientId && (
-        <EditPatientDetails
-          patientId={selectedPatientId}
-          onClose={handleCloseEditForm}
-          onUpdate={fetchData}
-        />
+      {loading ? (
+        <div className="flex justify-center items-center h-full">
+          <ColorRing
+            visible={true}
+            height={80}
+            width={80}
+            ariaLabel="blocks-loading"
+            wrapperStyle={{}}
+            wrapperClass="blocks-wrapper"
+            colors={["#e15b64", "#f47e60", "#f8b26a", "#abbd81", "#849b87"]}
+          />
+        </div>
+      ) : (
+        <>
+          <PatientList
+            data={data}
+            onDelete={onDelete}
+            onEdit={onEdit}
+            onSearch={onSearch}
+            onPageChange={onPageChange}
+            onActivation={onActivation}
+            currentPage={filterData.page} // Pass current page to DoctorList
+            totalPages={totalPages} // Calculate total pages
+          />
+          {selectedPatientId && (
+            <EditPatientDetails
+              patientId={selectedPatientId}
+              onClose={handleCloseEditForm}
+              onUpdate={fetchData}
+            />
+          )}
+        </>
       )}
       <ToastContainer />
     </AdminDashboardlayout>

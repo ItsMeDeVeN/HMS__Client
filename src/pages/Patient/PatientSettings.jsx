@@ -5,6 +5,7 @@ import profile from "../../components/profile.jpg";
 import PatientDashboardlayout from "../../layouts/PatientDashboardlayout";
 import axios from "axios";
 import * as Yup from "yup";
+import Loader, { ColorRing } from "react-loader-spinner"; // Import Loader from react-loader-spinner
 
 // Validation Schema for Formik
 const validationSchema = Yup.object().shape({
@@ -19,10 +20,11 @@ const validationSchema = Yup.object().shape({
   address: Yup.string().required("Address is required"),
 });
 
-const Patient_Settings = () => {
+const PatientSettings = () => {
   const id = localStorage.getItem("User_Id");
   const [data, setData] = useState({});
   const [editMode, setEditMode] = useState(false);
+  const [loading, setLoading] = useState(true); // State to manage loading state
 
   const fetchData = async () => {
     try {
@@ -36,6 +38,8 @@ const Patient_Settings = () => {
       }
     } catch (e) {
       console.error("Error fetching patient details:", e);
+    } finally {
+      setLoading(false); // Set loading to false after fetching data
     }
   };
 
@@ -46,13 +50,11 @@ const Patient_Settings = () => {
         ...values,
       });
       if (res.data.success) {
-        // setData(values);
-        
-        toast.success("Details updated successfully!",{
+        toast.success("Details updated successfully!", {
           onClose: () => {
             fetchData();
             setEditMode(false);
-          }
+          },
         });
       } else {
         console.error("Failed to update details:", res.data);
@@ -67,6 +69,22 @@ const Patient_Settings = () => {
   useEffect(() => {
     fetchData();
   }, []);
+
+  if (loading) {
+    return (
+      <div className="flex justify-center items-center h-screen">
+        <ColorRing
+          visible={true}
+          height="80"
+          width="80"
+          ariaLabel="color-ring-loading"
+          wrapperStyle={{}}
+          wrapperClass="color-ring-wrapper"
+          colors={["#e15b64", "#f47e60", "#f8b26a", "#abbd81", "#849b87"]}
+        />
+      </div>
+    );
+  }
 
   return (
     <PatientDashboardlayout>
@@ -323,9 +341,7 @@ const Patient_Settings = () => {
                           <span className="ml-6">{data.age}</span>
                         </p>
                         <p className="text-gray-700 flex items-center">
-                          <span className="font-bold w-20">
-                            BloodGroup:
-                          </span>
+                          <span className="font-bold w-20">BloodGroup:</span>
                           <span className="ml-6">{data.bloodgroup}</span>
                         </p>
                         <p className="text-gray-700 flex items-center">
@@ -363,4 +379,4 @@ const Patient_Settings = () => {
   );
 };
 
-export default Patient_Settings;
+export default PatientSettings;

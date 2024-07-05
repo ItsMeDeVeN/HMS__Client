@@ -6,15 +6,15 @@ import ProtectedRoutes from "./utils/ProtectedRoutes";
 
 import DoctorOnBoard from "./pages/Doctor/DoctorOnBoard";
 import DoctorDashBoard from "./pages/Doctor/DoctorDashboard";
-import DOC_Appointments from "./pages/Doctor/DOC_Appointments";
+import DoctorAppointments from "./pages/Doctor/DoctorAppointments";
 import Managedoctors from "./pages/Doctor/Managedoctors";
-import DOC_Settings from "./pages/Doctor/DOC_Settings";
+import DoctorSettings from "./pages/Doctor/DoctorSettings";
 
 import PatientOnBoard from "./pages/Patient/PatientOnBoard";
 import PatientDashboard from "./pages/Patient/PatientDashboard";
 import Managedoclist from "./pages/Patient/Managedoclist";
-import Patient_Settings from "./pages/Patient/Patient_Settings";
-import Patient_Appointments from "./pages/Patient/Patient_Appointments";
+import PatientSettings from "./pages/Patient/PatientSettings";
+import PatientAppointments from "./pages/Patient/PatientAppointments";
 
 import ForgotPassword from "./pages/auth/ForgotPassword";
 import Landingpage from "./pages/Landing/Landingpage";
@@ -24,7 +24,6 @@ import AdminDashboard from "./admin/pages/AdminDashboard";
 import ManageDoctor from "./admin/pages/UserManagement/DoctorManagement/ManageDoctor";
 import ManagePatient from "./admin/pages/UserManagement/PatientManagement/ManagePatient";
 import AdminLogin from "./admin/pages/auth/AdminLogin";
-import EditDOCDetails from "./admin/pages/UserManagement/DoctorManagement/EditDOCDetails";
 import AdminProtectedRoutes from "./admin/utils/AdminProtectedRoutes";
 
 const AllRoutes = () => {
@@ -41,46 +40,39 @@ const AllRoutes = () => {
           <Route path="/auth/login" element={<AdminLogin />}></Route>
 
           <Route element={<AdminProtectedRoutes allowedRole={"Admin"} />}>
-            <Route path="/Admin/Dashboard" element={<AdminDashboard />}></Route>
-            <Route
-              path="/Admin/Patient_List"
-              element={<ManagePatient />}
-            ></Route>
-            <Route path="/Admin/DOC_List" element={<ManageDoctor />}></Route>
-            <Route
-              path="/Admin/DOC_List/EditDOCDetails"
-              element={<EditDOCDetails />}
-            ></Route>
+            <Route path="/admin/dashboard" element={<AdminDashboard />}></Route>
+            <Route path="/admin/patients" element={<ManagePatient />}></Route>
+            <Route path="/admin/doctors" element={<ManageDoctor />}></Route>
           </Route>
 
-          <Route path="/signup/Doctor" element={<DoctorOnBoard />}></Route>
+          <Route path="/signup/doctor" element={<DoctorOnBoard />}></Route>
           <Route element={<ProtectedRoutes allowedRole={"Doctor"} />}>
             <Route
-              path="/Doctor/DashBoard"
+              path="/doctor/dashboard"
               element={<DoctorDashBoard />}
             ></Route>
             <Route
-              path="/Doctor/Appointments"
-              element={<DOC_Appointments />}
+              path="/doctor/appointments"
+              element={<DoctorAppointments />}
             ></Route>
-            <Route path="/Doctor/Doctors" element={<Managedoctors />}></Route>
-            <Route path="/Doctor/Settings" element={<DOC_Settings />}></Route>
+            <Route path="/doctor/doctors" element={<Managedoctors />}></Route>
+            <Route path="/doctor/settings" element={<DoctorSettings />}></Route>
           </Route>
 
-          <Route path="/signup/Patient" element={<PatientOnBoard />}></Route>
+          <Route path="/signup/patient" element={<PatientOnBoard />}></Route>
           <Route element={<ProtectedRoutes allowedRole={"Patient"} />}>
             <Route
-              path="/Patient/DashBoard"
+              path="/patient/dashboard"
               element={<PatientDashboard />}
             ></Route>
             <Route
-              path="/Patient/Appointments"
-              element={<Patient_Appointments />}
+              path="/patient/appointments"
+              element={<PatientAppointments />}
             ></Route>
-            <Route path="/Patient/Doctors" element={<Managedoclist />}></Route>
+            <Route path="/patient/doctors" element={<Managedoclist />}></Route>
             <Route
-              path="/Patient/Settings"
-              element={<Patient_Settings />}
+              path="/patient/settings"
+              element={<PatientSettings />}
             ></Route>
           </Route>
         </Routes>

@@ -5,7 +5,6 @@ import * as Yup from "yup";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
-
 const EditDOCDetails = ({ doctorId, onClose, onUpdate }) => {
   const [formData, setFormData] = useState({
     name: "",
@@ -19,7 +18,6 @@ const EditDOCDetails = ({ doctorId, onClose, onUpdate }) => {
     availability: [],
     consultingfee: "",
   });
-
 
   useEffect(() => {
     const fetchDoctorDetails = async () => {

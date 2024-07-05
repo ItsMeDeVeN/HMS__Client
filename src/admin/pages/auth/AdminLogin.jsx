@@ -15,7 +15,10 @@ const AdminLogin = () => {
   const handleSubmit = async (values) => {
     try {
       setSubmitting(true);
-      const res = await axios.post("http://localhost:3000/api/adminlogin", values);
+      const res = await axios.post(
+        "http://localhost:3000/api/adminlogin",
+        values
+      );
       handleResponse(res.status, res.data.message, res);
     } catch (e) {
       console.log(e);
@@ -28,15 +31,15 @@ const AdminLogin = () => {
   const handleResponse = (status, message, res) => {
     if (status === 200) {
       toast.success(message);
-      console.log(res.data)
-      localStorage.setItem("Token",res.data.token)   
-      localStorage.setItem("User_Id",res.data.admin._id)
-      localStorage.setItem("Role",res.data.admin.role)
-      localStorage.setItem("Name",res.data.admin.name)
-      console.log(res.data)
-        setTimeout(() => {
-          navigate("/Admin/Dashboard");
-        }, 2000);
+      console.log(res.data);
+      localStorage.setItem("Token", res.data.token);
+      localStorage.setItem("User_Id", res.data.admin._id);
+      localStorage.setItem("Role", res.data.admin.role);
+      localStorage.setItem("Name", res.data.admin.name);
+      console.log(res.data);
+      setTimeout(() => {
+        navigate("/admin/dashboard");
+      }, 2000);
     } else if (status === 400 || status === 403 || status === 401) {
       toast.error(message);
     } else {
@@ -118,8 +121,7 @@ const AdminLogin = () => {
             >
               Submit
             </button>
-            <div className="text-center mt-4">
-            </div>
+            <div className="text-center mt-4"></div>
           </Form>
         </Formik>
       </div>

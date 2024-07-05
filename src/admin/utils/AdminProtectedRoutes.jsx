@@ -11,4 +11,4 @@ const AdminProtectedRoutes = ({ allowedRole }) => {
   return user ? <Outlet /> : <Navigate to="/auth/login" />;
 };
 
-export default AdminProtectedRoutes
+export default AdminProtectedRoutes;
